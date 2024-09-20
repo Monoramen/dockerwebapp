@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target type="docker" uuid="3e6e744a-6e22-4748-81fe-92b93f8237e5">
+        <config>
+          <option name="targetPlatform">
+            <TargetPlatform />
+          </option>
+          <option name="buildImageConfig">
+            <BuildImageConfig>
+              <option name="contextFolder" value="target/DockerWebApp-1.0-SNAPSHOT" />
+              <option name="dockerFile" value="docker-compose.yml" />
+            </BuildImageConfig>
+          </option>
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="agentFolder">
+              <VolumeState>
+                <option name="targetSpecificBits">
+                  <map>
+                    <entry key="mountAsVolume" value="false" />
+                  </map>
+                </option>
+              </VolumeState>
+            </option>
+            <option name="classpathFolder">
+              <VolumeState>
+                <option name="targetSpecificBits">
+                  <map>
+                    <entry key="mountAsVolume" value="false" />
+                  </map>
+                </option>
+              </VolumeState>
+            </option>
+          </config>
+        </ContributedStateBase>
+      </target>
+      <target name="tomcat:latest" type="docker" uuid="c560fb80-a9df-41a7-90bd-78af000754b4">
+        <config>
+          <option name="targetPlatform">
+            <TargetPlatform />
+          </option>
+          <option name="buildImageConfig">
+            <BuildImageConfig>
+              <option name="dockerFile" value="src/Dockerfile" />
+            </BuildImageConfig>
+          </option>
+          <option name="buildNotPull" value="false" />
+          <option name="pullImageConfig">
+            <PullImageConfig>
+              <option name="tagToPull" value="tomcat:latest" />
+            </PullImageConfig>
+          </option>
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="agentFolder">
+              <VolumeState>
+                <option name="targetSpecificBits">
+                  <map>
+                    <entry key="mountAsVolume" value="false" />
+                  </map>
+                </option>
+              </VolumeState>
+            </option>
+            <option name="classpathFolder">
+              <VolumeState>
+                <option name="targetSpecificBits">
+                  <map>
+                    <entry key="mountAsVolume" value="false" />
+                  </map>
+                </option>
+              </VolumeState>
+            </option>
+            <option name="homePath" value="/opt/java/openjdk" />
+            <option name="javaVersionString" value="21.0.4" />
+          </config>
+        </ContributedStateBase>
+      </target>
+      <target name="tomcat-10-0-11-jdk17" type="docker-compose" uuid="b5d933ca-1be5-4678-838f-6f5756ef4d15">
+        <config>
+          <option name="targetPlatform">
+            <TargetPlatform />
+          </option>
+          <option name="configurationFiles">
+            <list>
+              <option value="D:\Coding\DockerWebApp\docker-compose.yml" />
+            </list>
+          </option>
+          <option name="envs">
+            <map>
+              <entry key="JPDA" value="&quot;*:8000&quot;" />
+              <entry key="JPDA_TRANSPORT" value="&quot;dt_socket&quot;" />
+            </map>
+          </option>
+          <option name="projectName" value="dockerwebapp" />
+          <option name="serviceName" value="tomcat-10-0-11-jdk17" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/opt/java/openjdk" />
+            <option name="javaVersionString" value="17.0.5" />
+          </config>
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>

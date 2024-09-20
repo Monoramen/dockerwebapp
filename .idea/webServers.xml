@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="1ee06b7a-5e49-437c-83bb-9514c4c58d6b" name="app" url="http://localhost:8080/app/">
+        <fileTransfer mountedRoot="D:\Coding\DockerWebApp\target\DockerWebApp-1.0-SNAPSHOT" accessType="MOUNT" port="0" />
+      </webServer>
+    </option>
+  </component>
+</project>
