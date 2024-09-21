@@ -9,7 +9,17 @@ public class MessageDto {
 
     // Отправитель и чат — в виде строк, а не объектов
     private String senderUsername;
-    private String chatName;
+    private Long chatId;
+
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
+    }
+
+
 
     // Геттеры и сеттеры
 
@@ -45,13 +55,7 @@ public class MessageDto {
         this.senderUsername = senderUsername;
     }
 
-    public String getChatName() {
-        return chatName;
-    }
 
-    public void setChatName(String chatName) {
-        this.chatName = chatName;
-    }
     @Override
     public String toString() {
         return "MessageDto{" +
@@ -59,7 +63,7 @@ public class MessageDto {
                 ", text='" + text + '\'' +
                 ", dateTime='" + dateTime + '\'' +
                 ", senderUsername='" + senderUsername + '\'' +
-                ", chatName='" + chatName + '\'' +
+                ", chatName='" + chatId + '\'' +
                 '}';
     }
 }

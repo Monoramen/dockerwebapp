@@ -4,20 +4,24 @@ import com.dockerwebapp.model.Chat;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
-public class ChatMapper {
+
+public class ChatMapperRepo {
 
     public static Chat mapResultSetToChat(ResultSet resultSet) throws SQLException {
         Long id = resultSet.getLong("id");
         String name = resultSet.getString("name");
 
-        if (resultSet.wasNull()) { // Проверка на null
-            return null;
+        // Проверка на null для id
+        if (resultSet.wasNull()) {
+            return null; // Если id равен null, возвращаем null
         }
 
+        // Создаем новый объект Chat с использованием Builder
         return new Chat.ChatBuilder()
                 .setId(id)
                 .setName(name)
-                .build();
+                .build(); // Возвращаем готовый объект Chat
     }
 }

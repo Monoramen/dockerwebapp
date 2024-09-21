@@ -16,13 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ChatRepositoryImplTest  extends AbstractDatabaseTest {
-    private UserRepositoryImpl userRepository;
+
     private ChatRepositoryImpl chatRepository;
 
     @BeforeEach
     void init() throws SQLException {
         initializeDatabaseConnection();
-        userRepository = new UserRepositoryImpl();
         chatRepository = new ChatRepositoryImpl();
     }
 
@@ -41,7 +40,7 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
         chat.addParticipant(user1);
         chat.addParticipant(user2);
         chatRepository.addChat(chat);
-        List<Chat> chats = userRepository.getUserChats(1L);
+        List<Chat> chats = chatRepository.getUserChats(1L);
         assertNotNull(chats);
         assertFalse(chats.isEmpty());
         assertEquals("My Chat", chats.get(2).getName());
@@ -56,16 +55,16 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
         chatRepository.deleteChat(chat);
         chat.setId(2L);
         chatRepository.deleteChat(chat);
-        List<Chat> chats = userRepository.getUserChats(1L); // Проверяем, что чат был удален
+        List<Chat> chats = chatRepository.getUserChats(1L); // Проверяем, что чат был удален
         assertTrue(chats.isEmpty());
     }
 
     @Test
     void testGetUserChats() throws SQLException {
-        List<Chat> chats = userRepository.getUserChats(1L); // Получаем чаты пользователя с id=1
+        List<Chat> chats = chatRepository.getUserChats(1L); // Получаем чаты пользователя с id=1
+        System.out.println(chats);
         assertNotNull(chats);
-
-        assertEquals(0, chats.size()); // Проверяем количество чатов
+        assertEquals(2, chats.size()); // Проверяем количество чатов
     }
 
 
@@ -79,10 +78,8 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
     @Test
     void testUpdateChat() throws SQLException {
         List<Chat> chats = chatRepository.getUserChats(1L);
-
         Chat chat = chats.get(0);
         chat.setId(1L);
-
         chat.setName("Updated Chat Name");
         chatRepository.updateChat(chat);
 

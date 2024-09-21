@@ -15,4 +15,6 @@ public interface ChatRepository {
 
     void updateChat(Chat chat) throws SQLException;
 
+    Chat getChatById(Long chatId) throws SQLException;
+
 }

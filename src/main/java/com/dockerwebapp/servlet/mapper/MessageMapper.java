@@ -15,12 +15,12 @@ public interface MessageMapper {
     MessageMapper INSTANCE = Mappers.getMapper(MessageMapper.class);
 
     @Mapping(source = "sender.username", target = "senderUsername")
-    @Mapping(source = "chat.name", target = "chatName")
+    @Mapping(source = "chatId", target = "chatId")
     @Mapping(source = "dateTime", target = "dateTime", qualifiedByName = "localDateTimeToString")
     MessageDto convert(Message message);
 
     @Mapping(source = "senderUsername", target = "sender.username")
-    @Mapping(source = "chatName", target = "chat.name")
+    @Mapping(source = "chatId", target = "chatId")
     @Mapping(source = "dateTime", target = "dateTime", qualifiedByName = "stringToLocalDateTime")
     Message convert(MessageDto messageDto);
 

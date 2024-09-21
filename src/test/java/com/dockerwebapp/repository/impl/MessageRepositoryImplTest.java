@@ -41,7 +41,7 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
         assertEquals("1", savedMessage.getId().toString());
         assertEquals("Hello, this is Jane", savedMessage.getText());
         assertEquals("first", savedMessage.getSender().getUsername());
-        assertEquals("chat1", savedMessage.getChat().getName());
+        assertEquals("1", savedMessage.getChatId());
         assertEquals(datetime, savedMessage.getDateTime().toString());
     }
 
@@ -50,7 +50,7 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
         Message message = new Message();
         message.setText("Hello, world!");
         message.setSender(new User.UserBuilder(1L, "first", "1234").build());
-        message.setChat(new Chat(2L, "chat1"));
+        message.getChatId();
         message.setDateTime(LocalDateTime.now());
         messageRepository.save(message);
         List<Message> savedMessage = messageRepository.findAll();
@@ -76,7 +76,7 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
         Message message = new Message();
         message.setText("Hello, world!");
         message.setSender(new User.UserBuilder(1L, "first", "1234").build());
-        message.setChat(new Chat(2L, "chat1"));
+        message.getChatId();
         message.setDateTime(LocalDateTime.now());
         messageRepository.save(message);
         messageRepository.delete(5L);

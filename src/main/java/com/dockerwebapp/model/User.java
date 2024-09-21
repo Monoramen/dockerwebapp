@@ -28,6 +28,11 @@ public class User {
         this.chats = builder.chats;
     }
 
+    public User(Long id, String username) {
+        this.id = id;
+        this.username = username;
+    }
+
     public static class UserBuilder {
         private Long id;
         private String username;
@@ -42,6 +47,7 @@ public class User {
             this.username = username;
             this.password = password;
         }
+        public UserBuilder(){}
 
         public UserBuilder setUsername(String username) {
             this.username = username;
@@ -72,6 +78,12 @@ public class User {
 
         public User build() {
             return new User(this);
+        }
+
+
+        public UserBuilder setId(Long id) {
+            this.id = id; // Добавлен сеттер для id
+            return this; // Возвращаем текущий объект для поддержки цепочки вызовов
         }
     }
 

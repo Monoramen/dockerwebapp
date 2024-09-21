@@ -1,7 +1,6 @@
 package com.dockerwebapp.repository.mapper;
 
 import com.dockerwebapp.model.Chat;
-import com.dockerwebapp.model.Message;
 import com.dockerwebapp.model.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

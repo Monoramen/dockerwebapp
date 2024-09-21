@@ -4,8 +4,6 @@ import com.dockerwebapp.db.QueryExecutor;
 import com.dockerwebapp.model.User;
 import com.dockerwebapp.repository.UserManagementRepository;
 import com.dockerwebapp.repository.mapper.UserManagementMapper;
-
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;

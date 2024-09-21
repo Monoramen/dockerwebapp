@@ -93,7 +93,7 @@ public class MessageRepositoryImpl implements MessageRepository {
                 new Object[]{
                         message.getText(),
                         message.getSender().getId(),  // Убедитесь, что sender не равен null
-                        message.getChat().getId(),     // Убедитесь, что chat не равен null
+                        message.getChatId(),     // Убедитесь, что chat не равен null
                         Timestamp.valueOf(message.getDateTime()) // Преобразуем LocalDateTime в Timestamp
                 }
         );

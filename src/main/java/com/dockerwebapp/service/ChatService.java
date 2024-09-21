@@ -12,7 +12,7 @@ public interface ChatService {
 
   void addChat(ChatDto chatDto) throws SQLException;
   void deleteChat(ChatDto chatDto) throws SQLException;
-  List<ChatDto> getUserChats(Long userId) throws SQLException;
   void updateChat(ChatDto chatDto) throws SQLException;
   Chat getChatById(Long chatId);
+  List<ChatDto> getUserChats(Long userId) throws SQLException;
 }

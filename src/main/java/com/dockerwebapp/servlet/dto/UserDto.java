@@ -1,8 +1,6 @@
 package com.dockerwebapp.servlet.dto;
 
-
 import com.dockerwebapp.model.Chat;
-import com.dockerwebapp.model.Message;
 import com.dockerwebapp.model.User;
 
 import java.util.List;

@@ -7,6 +7,7 @@ import com.dockerwebapp.servlet.dto.ChatDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebInitParam;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +20,9 @@ import java.util.List;
 @WebServlet(
         name = "ChatServlet",
         description = "Represents a Chat servlet for REST API transactions",
-        urlPatterns = {"/api/users/*/chats/*", "/api/chats/*"}
+        urlPatterns = {"/api/user/*"},
+        initParams={
+        @WebInitParam(name = "user", value = "chats")}
 )
 public class ChatServlet extends HttpServlet {
     private ChatService chatService;  // Используем интерфейс для большей гибкости
@@ -35,28 +38,35 @@ public class ChatServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
+        Long userId;
+        if (pathInfo != null) {
+            String[] pathParts = pathInfo.split("/");
 
-        if (pathInfo != null && pathInfo.matches("/\\d+")) { // Получение конкретного чата по ID
-            Long chatId = Long.valueOf(pathInfo.substring(1));
-            Chat chatDto = chatService.getChatById(chatId); // Предполагается, что метод существует
-            if (chatDto != null) {
+                if (pathParts.length == 3 && pathParts[2].equals("chats")) {
+                    userId = Long.valueOf(pathParts[1]);
+                    List<ChatDto> chats;
+                    try {
+                        chats = chatService.getUserChats(userId);
+                        System.out.println(chats);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                        response.setContentType("application/json");
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        objectMapper.writeValue(response.getOutputStream(), chats);
+                }
+            if (pathParts.length == 4 && pathParts[2].equals("chat")) { // Изменено на index 3 для "chat"
+                Long chatId = Long.valueOf(pathParts[3]); // Предполагается, что chatId находится на index 4
+                Chat chat;
+                chat = chatService.getChatById(chatId);
+                System.out.println(chat);
                 response.setContentType("application/json");
                 response.setStatus(HttpServletResponse.SC_OK);
-                objectMapper.writeValue(response.getOutputStream(), chatDto);
-            } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Chat not found");
+                objectMapper.writeValue(response.getOutputStream(), chat);
             }
-        } else {
-            Long userId = extractUserIdFromPath(request.getPathInfo());
-            List<ChatDto> chats = null; // Предполагается, что метод существует
-            try {
-                chats = chatService.getUserChats(userId);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            response.setContentType("application/json");
-            response.setStatus(HttpServletResponse.SC_OK);
-            objectMapper.writeValue(response.getOutputStream(), chats);
+
+        }    else {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User ID is required");
         }
     }
 

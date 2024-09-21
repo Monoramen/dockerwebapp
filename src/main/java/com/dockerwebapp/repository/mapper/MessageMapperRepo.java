@@ -21,8 +21,8 @@ public class MessageMapperRepo {
 
         Long chatId = resultSet.getLong("chat_id");
         String chatName = resultSet.getString("chat_name"); // Убедитесь, что это поле доступно
-        Chat chat = new Chat(chatId, chatName);
 
-        return new Message(id, text, sender, chat);
+
+        return new Message(id, text, sender, chatId);
     }
 }

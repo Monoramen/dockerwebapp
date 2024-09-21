@@ -13,19 +13,28 @@ public class Message {
     private String text;
     private LocalDateTime dateTime;
     private User sender; // отправитель сообщения
-    private Chat chat; // чат, в котором было отправлено сообщение
 
-    public Message(Long id, String text, User sender, Chat chat) {
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
+    }
+
+    private Long chatId; // чат, в котором было отправлено сообщение
+
+    public Message(Long id, String text, User sender, Long chatId) {
         this.id = id;
         this.text = text;
         this.dateTime = LocalDateTime.now();
         this.sender = sender;
-        this.chat = chat;
+        this.chatId = chatId;
     }
 
     public Message() {
-    }
 
+    }
 
     public User getSender() {
         return sender;
@@ -35,13 +44,7 @@ public class Message {
         this.sender = sender;
     }
 
-    public Chat getChat() {
-        return chat;
-    }
 
-    public void setChat(Chat chat) {
-        this.chat = chat;
-    }
 
     // Геттеры и сеттеры
     public Long getId() {
@@ -94,12 +97,12 @@ public class Message {
                 Objects.equals(text, message.text) &&
                 Objects.equals(dateTime, message.dateTime) &&
                 Objects.equals(sender, message.sender)  &&
-                Objects.equals(chat, message.chat);
+                Objects.equals(chatId, message.chatId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, dateTime, sender, chat);
+        return Objects.hash(id, text, dateTime, sender, chatId);
     }
 
     // Переопределение toString для удобного отображения
@@ -109,8 +112,8 @@ public class Message {
                 "id=" + id +
                 ", text='" + text + '\'' +
                 ", dateTime=" + dateTime +
-                ", sender=" + sender.toString() +
-                ", chat=" + chat.toString() +
+                ", sender=" + (sender != null ? sender.getId() : "null") + // Выводим ID отправителя
+                ", chatId=" + (chatId != null ? chatId : "null") + // Выводим ID чата вместо объекта
                 '}';
     }
 }

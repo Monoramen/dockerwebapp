@@ -17,7 +17,6 @@ import java.time.format.DateTimeFormatter;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
     UserDto convert(User user);
-
     User convert(UserDto userDto);
 
 }

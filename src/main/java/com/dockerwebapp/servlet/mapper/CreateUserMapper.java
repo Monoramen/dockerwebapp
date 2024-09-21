@@ -1,7 +1,6 @@
 package com.dockerwebapp.servlet.mapper;
 
 import com.dockerwebapp.model.User;
-import com.dockerwebapp.servlet.dto.UserDto;
 import com.dockerwebapp.servlet.dto.CreateUserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
