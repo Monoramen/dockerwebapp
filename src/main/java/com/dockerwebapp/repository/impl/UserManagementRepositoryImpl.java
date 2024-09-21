@@ -22,8 +22,7 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
         String sql = "INSERT INTO users (username, password) " +
                 "VALUES (?, ?) " +
                 "ON CONFLICT (username) DO UPDATE " +
-                "SET password = EXCLUDED.password"; // Обновляем только поле password
-
+                "SET password = EXCLUDED.password"; // Обновляем только
         queryExecutor.executeUpdate(
                 sql,
                 new Object[]{
@@ -134,22 +133,5 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
         });
     }
 
-    public User getUserWithChats(Long userId) throws SQLException {
-        String sql = "SELECT u.*, "
-                + "(SELECT json_agg(c) FROM chats c JOIN chat_participants cp ON c.id = cp.chat_id WHERE cp.user_id = u.id) AS chats "
-                + "FROM users u WHERE u.id = ?";
-
-        return queryExecutor.executeQuery(sql, new Object[]{userId}, resultSet -> {
-            User user = null;
-            try {
-                while (resultSet.next()) {  // Используйте стандартный подход
-                    user = UserManagementMapper.mapResultSetToUserManagement(resultSet);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return user;
-        });
-    }
 }
 

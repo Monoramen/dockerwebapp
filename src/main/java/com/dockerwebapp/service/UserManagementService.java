@@ -2,11 +2,13 @@ package com.dockerwebapp.service;
 
 import com.dockerwebapp.model.User;
 import com.dockerwebapp.servlet.dto.UserDto;
+import com.dockerwebapp.servlet.dto.CreateUserDto;
 
 import java.sql.SQLException;
 
 public interface UserManagementService {
-    void createUser(UserDto userDto) throws SQLException;
+
+    void createUser(CreateUserDto CreateUserDto);
 
     void updateUser(UserDto userDto) throws SQLException;
 
@@ -15,4 +17,5 @@ public interface UserManagementService {
     User getByUsername(String username) throws SQLException;
 
     User getById(Long id) throws SQLException;
+
 }

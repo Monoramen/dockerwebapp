@@ -13,6 +13,7 @@ public class UserDto extends User {
     private String firstName;
     private String lastName;
     private String about;
+    private String password;
     private List<Chat> chats;
 
     public Long getId() {
@@ -56,6 +57,13 @@ public class UserDto extends User {
         this.about = about;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public List<Chat> getChats() {
         return chats;
@@ -64,6 +72,7 @@ public class UserDto extends User {
     public void setChats(List<Chat> chats) {
         this.chats = chats;
     }
+
     @Override
     public String toString() {
         return "UserDto{" +
@@ -72,6 +81,7 @@ public class UserDto extends User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", about='" + about + '\'' +
+                ", password='" + password + '\'' +
                 ", chats=" + chats +
                 '}';
     }

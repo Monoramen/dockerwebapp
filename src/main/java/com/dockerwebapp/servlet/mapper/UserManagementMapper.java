@@ -25,7 +25,6 @@ public interface UserManagementMapper {
     @Mapping(source = "lastName", target = "lastName")
     @Mapping(source = "about", target = "about")
     @Mapping(source = "chats", target = "chats")
-
     User convert(UserDto userDto);
 
 }

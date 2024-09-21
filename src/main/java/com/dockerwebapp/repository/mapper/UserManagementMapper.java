@@ -42,11 +42,13 @@ public class UserManagementMapper {
         String lastName = resultSet.getString("last_name");
         String about = resultSet.getString("about");
         String password = resultSet.getString("password");
+        String chatsJson = resultSet.getString("chats");
 
         return new User.UserBuilder(id, username, password)
                 .setFirstName(firstName)
                 .setLastName(lastName)
                 .setAbout(about)
+                .setChats(parseChats(chatsJson))
                 .build();
     }
 
