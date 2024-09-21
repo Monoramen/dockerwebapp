@@ -6,9 +6,7 @@ public class MessageDto {
     private Long id;
     private String text;
     private String dateTime;  // В виде строки для удобства
-
-    // Отправитель и чат — в виде строк, а не объектов
-    private String senderUsername;
+    private Long senderId;
     private Long chatId;
 
     public Long getChatId() {
@@ -47,14 +45,14 @@ public class MessageDto {
         this.dateTime = dateTime;
     }
 
-    public String getSenderUsername() {
-        return senderUsername;
+
+    public Long getSenderId() {
+        return senderId;
     }
 
-    public void setSenderUsername(String senderUsername) {
-        this.senderUsername = senderUsername;
+    public void setSenderId(Long senderId) {
+        this.senderId = senderId;
     }
-
 
     @Override
     public String toString() {
@@ -62,7 +60,7 @@ public class MessageDto {
                 "id=" + id +
                 ", text='" + text + '\'' +
                 ", dateTime='" + dateTime + '\'' +
-                ", senderUsername='" + senderUsername + '\'' +
+                ", senderId='" + senderId + '\'' +
                 ", chatName='" + chatId + '\'' +
                 '}';
     }

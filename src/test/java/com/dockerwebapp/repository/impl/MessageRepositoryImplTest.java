@@ -1,16 +1,12 @@
 package com.dockerwebapp.repository.impl;
 
 
-import com.dockerwebapp.model.Chat;
+
 import com.dockerwebapp.model.Message;
-import com.dockerwebapp.model.User;
 
 import org.junit.jupiter.api.*;
-
 import org.testcontainers.junit.jupiter.Testcontainers;
-
 import java.sql.SQLException;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,8 +36,8 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
         String datetime = savedMessage.getDateTime().toString();
         assertEquals("1", savedMessage.getId().toString());
         assertEquals("Hello, this is Jane", savedMessage.getText());
-        assertEquals("first", savedMessage.getSender().getUsername());
-        assertEquals("1", savedMessage.getChatId());
+        assertEquals(1L, savedMessage.getSenderId());
+        assertEquals(1L, savedMessage.getChatId());
         assertEquals(datetime, savedMessage.getDateTime().toString());
     }
 
@@ -49,8 +45,7 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
     void testSaveMessage() throws SQLException {
         Message message = new Message();
         message.setText("Hello, world!");
-        message.setSender(new User.UserBuilder(1L, "first", "1234").build());
-        message.getChatId();
+        message.setSenderId(1L);
         message.setDateTime(LocalDateTime.now());
         messageRepository.save(message);
         List<Message> savedMessage = messageRepository.findAll();
@@ -75,8 +70,7 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
     void testDeleteMessage() throws SQLException {
         Message message = new Message();
         message.setText("Hello, world!");
-        message.setSender(new User.UserBuilder(1L, "first", "1234").build());
-        message.getChatId();
+        message.setSenderId(1L);
         message.setDateTime(LocalDateTime.now());
         messageRepository.save(message);
         messageRepository.delete(5L);

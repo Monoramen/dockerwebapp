@@ -14,12 +14,12 @@ import java.time.format.DateTimeFormatter;
 public interface MessageMapper {
     MessageMapper INSTANCE = Mappers.getMapper(MessageMapper.class);
 
-    @Mapping(source = "sender.username", target = "senderUsername")
+    @Mapping(source = "senderId", target = "senderId")
     @Mapping(source = "chatId", target = "chatId")
     @Mapping(source = "dateTime", target = "dateTime", qualifiedByName = "localDateTimeToString")
     MessageDto convert(Message message);
 
-    @Mapping(source = "senderUsername", target = "sender.username")
+    @Mapping(source = "senderId", target = "senderId")
     @Mapping(source = "chatId", target = "chatId")
     @Mapping(source = "dateTime", target = "dateTime", qualifiedByName = "stringToLocalDateTime")
     Message convert(MessageDto messageDto);

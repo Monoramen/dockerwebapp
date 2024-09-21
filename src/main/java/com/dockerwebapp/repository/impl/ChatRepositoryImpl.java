@@ -116,8 +116,8 @@ public class ChatRepositoryImpl implements ChatRepository {
                         Long senderId = resultSet.getLong("sender_id"); // Получаем ID отправителя
 
                         if (messageId != null) { // Проверяем, есть ли сообщение
-                            User sender = getUserById(senderId); // Получаем пользователя по ID отправителя
-                            Message message = new Message(messageId, messageText, sender, id); // Используем идентификатор чата
+                             // Получаем пользователя по ID отправителя
+                            Message message = new Message(messageId, messageText, senderId, id); // Используем идентификатор чата
                             messages.add(message);
                         }
                     } while (resultSet.next());

@@ -7,7 +7,13 @@ import java.sql.SQLException;
 import java.util.List;
 
 
+<<<<<<< HEAD
 public class ChatMapperRepo {
+=======
+
+
+public class ChatMapper {
+>>>>>>> bb43dcbad708fe9e7ed39364e6d6485da0e85a16
 
     public static Chat mapResultSetToChat(ResultSet resultSet) throws SQLException {
         Long id = resultSet.getLong("id");

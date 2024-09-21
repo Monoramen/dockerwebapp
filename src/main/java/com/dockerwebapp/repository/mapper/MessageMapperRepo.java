@@ -14,15 +14,11 @@ public class MessageMapperRepo {
         Long id = resultSet.getLong("id");
         String text = resultSet.getString("text");
         LocalDateTime dateTime = resultSet.getTimestamp("date_time").toLocalDateTime();
-
         Long senderId = resultSet.getLong("sender_id");
-        String senderUsername = resultSet.getString("sender_username");
-        User sender = new User.UserBuilder(senderId, senderUsername, "default_password").build();
-
         Long chatId = resultSet.getLong("chat_id");
         String chatName = resultSet.getString("chat_name"); // Убедитесь, что это поле доступно
 
 
-        return new Message(id, text, sender, chatId);
+        return new Message(id, text, senderId, chatId);
     }
 }

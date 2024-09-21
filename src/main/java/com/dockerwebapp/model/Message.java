@@ -12,7 +12,7 @@ public class Message {
     private Long id;
     private String text;
     private LocalDateTime dateTime;
-    private User sender; // отправитель сообщения
+    private Long senderId; // отправитель сообщения
 
     public Long getChatId() {
         return chatId;
@@ -24,11 +24,11 @@ public class Message {
 
     private Long chatId; // чат, в котором было отправлено сообщение
 
-    public Message(Long id, String text, User sender, Long chatId) {
+    public Message(Long id, String text, Long senderId, Long chatId) {
         this.id = id;
         this.text = text;
         this.dateTime = LocalDateTime.now();
-        this.sender = sender;
+        this.senderId = senderId;
         this.chatId = chatId;
     }
 
@@ -36,15 +36,13 @@ public class Message {
 
     }
 
-    public User getSender() {
-        return sender;
+    public Long getSenderId() {
+        return senderId;
     }
 
-    public void setSender(User sender) {
-        this.sender = sender;
+    public void setSenderId(Long senderId) {
+        this.senderId = senderId;
     }
-
-
 
     // Геттеры и сеттеры
     public Long getId() {
@@ -80,13 +78,7 @@ public class Message {
         return timestamp == null ? null : timestamp.toLocalDateTime();
     }
 
-    public User getUser() {
-        return sender;
-    }
 
-    public void setUser(User user) {
-        this.sender = user;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -96,13 +88,13 @@ public class Message {
         return Objects.equals(id, message.id) &&
                 Objects.equals(text, message.text) &&
                 Objects.equals(dateTime, message.dateTime) &&
-                Objects.equals(sender, message.sender)  &&
+                Objects.equals(senderId, message.senderId)  &&
                 Objects.equals(chatId, message.chatId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, dateTime, sender, chatId);
+        return Objects.hash(id, text, dateTime, senderId, chatId);
     }
 
     // Переопределение toString для удобного отображения
@@ -112,7 +104,7 @@ public class Message {
                 "id=" + id +
                 ", text='" + text + '\'' +
                 ", dateTime=" + dateTime +
-                ", sender=" + (sender != null ? sender.getId() : "null") + // Выводим ID отправителя
+                ", senderId=" + (senderId != null ? senderId : "null") + // Выводим ID отправителя
                 ", chatId=" + (chatId != null ? chatId : "null") + // Выводим ID чата вместо объекта
                 '}';
     }
