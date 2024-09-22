@@ -86,7 +86,7 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
         return queryExecutor.executeQuery(sql, new Object[]{username}, resultSet -> {
             try {
                 if (resultSet.next()) {
-                    return UserManagementMapper.mapResultSetToUser(resultSet);
+                    return UserManagementMapper.mapResultSetToUserManagement(resultSet);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

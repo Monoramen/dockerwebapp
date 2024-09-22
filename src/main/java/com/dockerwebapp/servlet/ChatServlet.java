@@ -25,7 +25,7 @@ import java.util.List;
         @WebInitParam(name = "user", value = "chats")}
 )
 public class ChatServlet extends HttpServlet {
-    private ChatService chatService;  // Используем интерфейс для большей гибкости
+    private ChatService chatService;
     private ObjectMapper objectMapper;  // Для работы с JSON
 
     @Override
@@ -72,27 +72,43 @@ public class ChatServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ChatDto chatDto = objectMapper.readValue(request.getInputStream(), ChatDto.class);
+        String pathInfo = request.getPathInfo();
 
-        try {
-            chatService.addChat(chatDto); // Предполагается, что метод существует
-            response.setStatus(HttpServletResponse.SC_CREATED);
-        } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create chat: " + e.getMessage());
+        if (pathInfo != null) {
+            String[] pathParts = pathInfo.split("/");
+
+            if (pathParts[2].equals("addchat")) {
+                try {
+                    ChatDto chatDto = objectMapper.readValue(request.getInputStream(), ChatDto.class);
+                    chatService.addChat(chatDto); // Предполагается, что метод существует
+                    response.setStatus(HttpServletResponse.SC_CREATED);
+                } catch (Exception e) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create chat: " + e.getMessage());
+                }
+            }
         }
+
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long chatId = Long.valueOf(request.getPathInfo().substring(1));
-        ChatDto chatDto = objectMapper.readValue(request.getInputStream(), ChatDto.class);
+        String pathInfo = request.getPathInfo();
 
-        try {
-            chatDto.setId(chatId); // Устанавливаем ID чата из URL
-            chatService.updateChat(chatDto); // Предполагается, что метод существует
-            response.setStatus(HttpServletResponse.SC_OK);
-        } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to update chat: " + e.getMessage());
+        if (pathInfo != null) {
+            String[] pathParts = pathInfo.split("/");
+
+            if (pathParts[2].equals("updateChat")) {
+                try {
+                    Long chatId = Long.valueOf(pathParts[3]);
+                    ChatDto chatDto = objectMapper.readValue(request.getInputStream(), ChatDto.class);
+                    System.out.println(chatDto);
+                    chatService.addChat(chatDto); // Предполагается, что метод существует
+
+                    response.setStatus(HttpServletResponse.SC_CREATED);
+                } catch (Exception e) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create chat: " + e.getMessage());
+                }
+            }
         }
     }
 
@@ -100,16 +116,20 @@ public class ChatServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
 
-        // Извлекаем ID чата из URL
-        Long chatId = Long.valueOf(pathInfo.substring(pathInfo.lastIndexOf('/') + 1));
+        if (pathInfo != null) {
+            String[] pathParts = pathInfo.split("/");
 
-        // Создаем ChatDto с ID чата
-        //ChatDto chatDto = new ChatDto();
-        //chatDto.setId(chatId);
+            if (pathParts[2].equals("deleteChat")) {
+                try {
+                    Long chatId = Long.valueOf(pathParts[3]);
+                    chatService.deleteChat(chatId); // Предполагается, что метод существует
 
-        // Вызываем метод удаления чата в сервисе
-        //chatService.deleteChat(chatDto);
-        response.setStatus(HttpServletResponse.SC_NO_CONTENT); // Успешное удаление
+                    response.setStatus(HttpServletResponse.SC_CREATED);
+                } catch (Exception e) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create chat: " + e.getMessage());
+                }
+            }
+        }
     }
 
     private Long extractUserIdFromPath(String pathInfo) {

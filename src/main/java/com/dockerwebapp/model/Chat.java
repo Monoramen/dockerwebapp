@@ -7,31 +7,31 @@ public class Chat {
 
     private Long id;
     private String name;
-    private List<User> participants; // участники чата
-    private List<Message> messages; // сообщения чата
+    private List<Long> participantIds; // Список идентификаторов участников
+    private List<Message> messages; // Сообщения чата
 
     private Chat(ChatBuilder builder) {
         this.id = builder.id;
         this.name = builder.name;
-        this.participants = builder.participants;
+        this.participantIds = builder.participantIds; // Устанавливаем идентификаторы участников из билдера
         this.messages = builder.messages; // Устанавливаем сообщения из билдера
     }
 
     public Chat() {
-        this.participants = new ArrayList<>();
+        this.participantIds = new ArrayList<>(); // Инициализируем список идентификаторов участников
         this.messages = new ArrayList<>(); // Инициализируем список сообщений
     }
 
     public Chat(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.participants = new ArrayList<>();
+        this.participantIds = new ArrayList<>(); // Инициализируем список идентификаторов участников
         this.messages = new ArrayList<>(); // Инициализируем список сообщений
     }
 
-    public void addParticipant(User user) {
-        if (user != null && !this.participants.contains(user)) {
-            this.participants.add(user);
+    public void addParticipant(Long userId) {
+        if (userId != null && !this.participantIds.contains(userId)) {
+            this.participantIds.add(userId); // Добавляем ID участника в список
         }
     }
 
@@ -51,27 +51,24 @@ public class Chat {
         this.name = name;
     }
 
-    public List<User> getParticipants() {
-        return participants;
+    public List<Long> getParticipantIds() {
+        return participantIds; // Возвращаем список идентификаторов участников
     }
 
-    public void setParticipants(List<User> participants) {
-        this.participants = participants;
+    public void setParticipantIds(List<Long> participantIds) {
+        this.participantIds = participantIds; // Устанавливаем новый список идентификаторов участников
     }
 
-    // Метод для получения сообщений
     public List<Message> getMessages() {
         return messages; // Возвращаем список сообщений
     }
 
-    // Метод для добавления сообщения
     public void addMessage(Message message) {
         if (message != null) {
             messages.add(message); // Добавляем сообщение в список
         }
     }
 
-    // Метод для установки списка сообщений
     public void setMessages(List<Message> messages) {
         this.messages = messages; // Устанавливаем новый список сообщений
     }
@@ -80,7 +77,7 @@ public class Chat {
     public static class ChatBuilder {
         private Long id;
         private String name;
-        private List<User> participants = new ArrayList<>();
+        private List<Long> participantIds = new ArrayList<>(); // Инициализируем список идентификаторов участников
         private List<Message> messages = new ArrayList<>(); // Инициализируем список сообщений
 
         public ChatBuilder setId(Long id) {
@@ -93,8 +90,8 @@ public class Chat {
             return this;
         }
 
-        public ChatBuilder setParticipants(List<User> participants) {
-            this.participants = participants; // Устанавливаем участников
+        public ChatBuilder setParticipantIds(List<Long> participantIds) {
+            this.participantIds = participantIds; // Устанавливаем идентификаторы участников
             return this;
         }
 
@@ -103,22 +100,25 @@ public class Chat {
             return this;
         }
 
-        // Метод для создания объекта Chat
         public Chat build() {
             return new Chat(this);
         }
 
-        // Метод для получения списка сообщений
         public List<Message> getMessages() {
             return messages;
         }
+
+        public List<Long> getParticipantIds() {
+            return participantIds;
+        }
     }
+
     @Override
     public String toString() {
         return "Chat{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", participantsCount=" + participants.size() + // Количество участников
+                ", participantsCount=" + participantIds.size() + // Количество участников по ID
                 ", messagesCount=" + messages.size() + // Количество сообщений
                 '}';
     }

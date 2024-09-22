@@ -1,22 +1,23 @@
 package com.dockerwebapp.servlet.dto;
 
-import com.dockerwebapp.model.Message;
-import com.dockerwebapp.model.User;
-
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class ChatDto {
-
     private Long id;
     private String name;
+    private List<Long> participantIds; // Список идентификаторов участников
 
-
-    // Конструктор с параметрами
-    public ChatDto(Long id, String name) {
+    public ChatDto(Long id, String name, List<Long> participantIds) {
         this.id = id;
         this.name = name != null ? name : ""; // Устанавливаем значение по умолчанию
+        this.participantIds = participantIds; // Инициализируем идентификаторы участников
+    }
+
+    public ChatDto() {
+        // Инициализация значений по умолчанию
+        this.participantIds = new ArrayList<>();
     }
 
     public Long getId() {
@@ -27,11 +28,18 @@ public class ChatDto {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name; // Добавляем setter для имени
+    }
 
+
+    public List<Long> getParticipantIds() {
+        return participantIds; // Геттер для идентификаторов участников
+    }
 
     @Override
     public String toString() {
-        return "ChatDto{id=" + id + ", name='" + name + '\'' + '}';
+        return "ChatDto{id=" + id + ", name='" + name + '\'' + ", participantIds=" + participantIds + '}';
     }
 
     @Override
@@ -40,13 +48,13 @@ public class ChatDto {
         if (!(o instanceof ChatDto)) return false;
         ChatDto chatDto = (ChatDto) o;
         return Objects.equals(id, chatDto.id) &&
-                Objects.equals(name, chatDto.name);
-
+                Objects.equals(name, chatDto.name) &&
+                Objects.equals(participantIds, chatDto.participantIds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, participantIds);
     }
 
     public void setId(Long chatId) {

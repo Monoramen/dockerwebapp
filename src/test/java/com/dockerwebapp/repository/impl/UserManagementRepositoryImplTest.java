@@ -26,7 +26,9 @@ class UserManagementRepositoryImplTest  extends AbstractDatabaseTest {
         void testCreateUser() throws SQLException {
             User user = createUser(1L, "john_doe", "password123");
             userManagementRepository.createUser(user);
+
             User actualUser = userManagementRepository.getByUsername("john_doe");
+            System.out.println(userManagementRepository.getByUsername("john_doe"));
             assertNotNull(actualUser);
             assertEquals(user.getUsername(),userManagementRepository.getByUsername("john_doe").getUsername());
         }
@@ -111,10 +113,8 @@ class UserManagementRepositoryImplTest  extends AbstractDatabaseTest {
 
         @Test
         void testfindAll() throws SQLException {
-            userManagementRepository.deleteUser("first");
-            userManagementRepository.deleteUser("second");
-            userManagementRepository.deleteUser("jorjenford");
-            userManagementRepository.deleteUser("test1");
+
+            System.out.println(userManagementRepository.findAll());
             String expectedUsers = ("[User{id=4, username='test2', firstName='test2', " +
                     "lastName='test2', about='Yet another bio test2'}]").trim();
             assertEquals(expectedUsers, userManagementRepository.findAll().toString());

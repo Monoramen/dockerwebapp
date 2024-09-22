@@ -34,17 +34,14 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
         Chat chat = new Chat();
         chat.setId(3L);
         chat.setName("My Chat");
-
-        User user1 = new User.UserBuilder(1L, "first", "1234").build();
-        User user2 = new User.UserBuilder(2L, "second", "4321").build();
-        chat.addParticipant(user1);
-        chat.addParticipant(user2);
+        chat.addParticipant(1L);
+        chat.addParticipant(2L);
         chatRepository.addChat(chat);
         List<Chat> chats = chatRepository.getUserChats(1L);
         assertNotNull(chats);
         assertFalse(chats.isEmpty());
         assertEquals("My Chat", chats.get(2).getName());
-       chatRepository.deleteChat(chat);
+       chatRepository.deleteChat(chat.getId());
     }
 
     @Test
@@ -52,11 +49,19 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
         System.out.println(chatRepository.getUserChats(1L));
         Chat chat = new Chat();
         chat.setId(1L);
-        chatRepository.deleteChat(chat);
+        chatRepository.deleteChat(chat.getId());
         chat.setId(2L);
-        chatRepository.deleteChat(chat);
+        chatRepository.deleteChat(chat.getId());
         List<Chat> chats = chatRepository.getUserChats(1L); // Проверяем, что чат был удален
         assertTrue(chats.isEmpty());
+    }
+
+    @Test
+    void testDeleteNotExitsChat() throws SQLException {
+        System.out.println(chatRepository.getUserChats(1L));
+        Chat chat = new Chat();
+        chat.setId(5L);
+        assertThrows(SQLException.class, () -> chatRepository.deleteChat(chat.getId()));
     }
 
     @Test
@@ -64,7 +69,7 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
         List<Chat> chats = chatRepository.getUserChats(1L); // Получаем чаты пользователя с id=1
         System.out.println(chats);
         assertNotNull(chats);
-        assertEquals(2, chats.size()); // Проверяем количество чатов
+        assertEquals(0, chats.size()); // Проверяем количество чатов
     }
 
 

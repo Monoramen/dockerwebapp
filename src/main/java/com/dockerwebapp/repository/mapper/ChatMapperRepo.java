@@ -4,20 +4,13 @@ import com.dockerwebapp.model.Chat;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-
-<<<<<<< HEAD
 public class ChatMapperRepo {
-=======
-
-
-public class ChatMapper {
->>>>>>> bb43dcbad708fe9e7ed39364e6d6485da0e85a16
-
     public static Chat mapResultSetToChat(ResultSet resultSet) throws SQLException {
-        Long id = resultSet.getLong("id");
-        String name = resultSet.getString("name");
+        Long id = resultSet.getLong("chat_id");
+        String name = resultSet.getString("chat_name");
 
         // Проверка на null для id
         if (resultSet.wasNull()) {
@@ -25,9 +18,22 @@ public class ChatMapper {
         }
 
         // Создаем новый объект Chat с использованием Builder
-        return new Chat.ChatBuilder()
+        Chat chat = new Chat.ChatBuilder()
                 .setId(id)
                 .setName(name)
                 .build(); // Возвращаем готовый объект Chat
+
+        // Извлекаем идентификаторы участников
+        List<Long> participantIds = new ArrayList<>();
+        do {
+            Long participantId = resultSet.getLong("user_id"); // Предполагается, что user_id извлекается из запроса
+            if (!resultSet.wasNull()) {
+                participantIds.add(participantId);
+            }
+        } while (resultSet.next());
+
+        chat.setParticipantIds(participantIds); // Устанавливаем идентификаторы участников в чат
+
+        return chat;
     }
 }

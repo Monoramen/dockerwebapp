@@ -21,9 +21,7 @@ public class ChatRepositoryImpl implements ChatRepository {
     @Override
     public void addChat(Chat chat) throws SQLException {
         // Сначала добавляем чат
-        String sql = "INSERT INTO chats (id, name) " +
-                "VALUES (?, ?) " +
-                "ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name";
+        String sql = "INSERT INTO chats (id, name) VALUES (?, ?) ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name";
 
         try {
             queryExecutor.executeUpdate(sql, new Object[]{
@@ -35,14 +33,19 @@ public class ChatRepositoryImpl implements ChatRepository {
         }
 
         // Затем добавляем участников
-        if (chat.getParticipants() != null && chat.getParticipants().size() >= 2) {
+        if (chat.getParticipantIds() != null && chat.getParticipantIds().size() >= 2) {
             String participantSql = "INSERT INTO chat_participants (chat_id, user_id) VALUES (?, ?)";
 
-            for (User participant : chat.getParticipants()) {
+            for (Long participantId : chat.getParticipantIds()) {
+                // Проверка существования пользователя перед добавлением
+                if (!isUserExists(participantId)) {
+                    throw new SQLException("User with ID " + participantId + " does not exist.");
+                }
+
                 try {
                     queryExecutor.executeUpdate(participantSql, new Object[]{
                             chat.getId(),
-                            participant.getId()
+                            participantId // Используем идентификатор участника
                     });
                 } catch (SQLException e) {
                     System.err.println("Error adding participant: " + e.getMessage());
@@ -53,13 +56,30 @@ public class ChatRepositoryImpl implements ChatRepository {
             throw new SQLException("A chat must have at least two participants.");
         }
     }
+
+    private boolean isUserExists(Long userId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM users WHERE id = ?";
+
+        // Используем executeQuery для получения результата
+        return queryExecutor.executeQuery(sql, new Object[]{userId}, resultSet -> {
+            try {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) > 0; // Возвращаем true, если пользователь существует
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            return false; // Пользователь не найден
+        });
+    }
+
     @Override
-    public void deleteChat(Chat chat) throws SQLException {
+    public void deleteChat(Long chatId) throws SQLException {
         String deleteParticipantsSql = "DELETE FROM chat_participants WHERE chat_id = ?";
-        queryExecutor.executeUpdate(deleteParticipantsSql, new Object[]{chat.getId()});
+        queryExecutor.executeUpdate(deleteParticipantsSql, new Object[]{chatId});
 
         String deleteChatSql = "DELETE FROM chats WHERE id = ?";
-        queryExecutor.executeUpdate(deleteChatSql, new Object[]{chat.getId()});
+        queryExecutor.executeUpdate(deleteChatSql, new Object[]{chatId});
     }
 
     @Override

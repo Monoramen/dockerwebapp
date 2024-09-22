@@ -2,6 +2,7 @@ package com.dockerwebapp.service.impl;
 
 
 import com.dockerwebapp.model.Chat;
+import com.dockerwebapp.model.User;
 import com.dockerwebapp.repository.ChatRepository;
 
 import com.dockerwebapp.repository.impl.ChatRepositoryImpl;
@@ -24,14 +25,28 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void addChat(ChatDto chatDto) throws SQLException {
-        Chat chat = ChatsMapper.INSTANCE.convert(chatDto);
+        // Преобразуем ChatDto в Chat
+        Chat chat = new Chat();
+        chat.setId(chatDto.getId());
+        chat.setName(chatDto.getName());
+
+        // Добавляем участников из DTO
+        if (chatDto.getParticipantIds() != null) {
+            for (Long participantId : chatDto.getParticipantIds()) {
+                chat.addParticipant(participantId); // Используем ID участника
+            }
+        }
         chatRepository.addChat(chat);
     }
 
     @Override
-    public void deleteChat(ChatDto chatDto) throws SQLException {
-        Chat chat = ChatsMapper.INSTANCE.convert(chatDto);
-        chatRepository.deleteChat(chat);
+    public void deleteChat(Long chatId) throws SQLException {
+
+        try {
+            chatRepository.deleteChat(chatId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

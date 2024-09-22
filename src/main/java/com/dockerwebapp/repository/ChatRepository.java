@@ -9,7 +9,7 @@ public interface ChatRepository {
 
     void addChat(Chat chat) throws SQLException;
 
-    void deleteChat(Chat chat) throws SQLException;
+    void deleteChat(Long chatId) throws SQLException;
 
     List<Chat> getUserChats(Long userId) throws SQLException;
 

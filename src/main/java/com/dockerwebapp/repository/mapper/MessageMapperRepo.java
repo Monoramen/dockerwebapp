@@ -16,9 +16,7 @@ public class MessageMapperRepo {
         LocalDateTime dateTime = resultSet.getTimestamp("date_time").toLocalDateTime();
         Long senderId = resultSet.getLong("sender_id");
         Long chatId = resultSet.getLong("chat_id");
-        String chatName = resultSet.getString("chat_name"); // Убедитесь, что это поле доступно
-
-
+        String chatName = resultSet.getString("chat_name");
         return new Message(id, text, senderId, chatId);
     }
 }
