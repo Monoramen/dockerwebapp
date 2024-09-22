@@ -111,13 +111,6 @@ class UserManagementRepositoryImplTest  extends AbstractDatabaseTest {
             assertEquals(expectedUser.getUsername(), actualUser.getUsername());
         }
 
-        @Test
-        void testfindAll() throws SQLException {
 
-            System.out.println(userManagementRepository.findAll());
-            String expectedUsers = ("[User{id=4, username='test2', firstName='test2', " +
-                    "lastName='test2', about='Yet another bio test2'}]").trim();
-            assertEquals(expectedUsers, userManagementRepository.findAll().toString());
-        }
 }
 

@@ -20,10 +20,7 @@ import java.util.List;
 @WebServlet(
         name = "ChatServlet",
         description = "Represents a Chat servlet for REST API transactions",
-        urlPatterns = {"/api/user/*"},
-        initParams={
-        @WebInitParam(name = "user", value = "chats")}
-)
+        urlPatterns = {"/api/user/*"})
 public class ChatServlet extends HttpServlet {
     private ChatService chatService;
     private ObjectMapper objectMapper;  // Для работы с JSON

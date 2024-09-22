@@ -141,19 +141,6 @@ public class User {
         this.about = about;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        User user = (User) o;
-
-        return Objects.equals(id, user.id) &&
-                Objects.equals(username, user.username) &&
-                Objects.equals(firstName, user.firstName) &&
-                Objects.equals(lastName, user.lastName) &&
-                Objects.equals(about, user.about);
-    }
 
     @Override
     public String toString() {
@@ -163,6 +150,7 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", about='" + about + '\'' +
+                ", chats=" + chats +
                 '}';
     }
 }

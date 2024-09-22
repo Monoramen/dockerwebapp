@@ -14,8 +14,8 @@ public interface UserManagementService {
 
     void deleteUser(String username) throws SQLException;
 
-    User getByUsername(String username) throws SQLException;
+    UserDto getByUsername(String username) throws SQLException;
 
-    User getById(Long id) throws SQLException;
+    UserDto getById(Long id) throws SQLException;
 
 }

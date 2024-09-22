@@ -115,21 +115,6 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
         });
     }
 
-    @Override
-    public List<User> findAll() throws SQLException {
-        String sql = "SELECT * FROM users";
-        return queryExecutor.executeQuery(sql, new Object[]{}, resultSet -> {
-            List<User> users = new ArrayList<>();
-            try {
-                while (resultSet.next()) {  // Используйте стандартный подход
-                    users.add(UserManagementMapper.mapResultSetToUser(resultSet));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return users;
-        });
-    }
 
 }
 

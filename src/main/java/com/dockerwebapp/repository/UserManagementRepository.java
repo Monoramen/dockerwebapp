@@ -16,6 +16,5 @@ public interface UserManagementRepository {
 
     User getById(Long id) throws SQLException;
 
-    List<User> findAll() throws SQLException;
 
 }

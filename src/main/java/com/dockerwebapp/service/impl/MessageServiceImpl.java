@@ -1,6 +1,7 @@
 package com.dockerwebapp.service.impl;
 
 import com.dockerwebapp.model.Message;
+import com.dockerwebapp.repository.ChatRepository;
 import com.dockerwebapp.repository.MessageRepository;
 
 
@@ -24,7 +25,9 @@ public class MessageServiceImpl implements MessageService {
         this.messageRepository = new MessageRepositoryImpl();
     }
 
-
+    public MessageServiceImpl(MessageRepository messageRepository) { // Конструктор для внедрения зависимости
+        this.messageRepository = messageRepository;
+    }
     @Override
     public List<MessageDto> findAll(Long chatId) {
         List<Message> messages;

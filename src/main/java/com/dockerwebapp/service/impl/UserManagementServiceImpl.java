@@ -1,6 +1,7 @@
 package com.dockerwebapp.service.impl;
 
 import com.dockerwebapp.model.User;
+import com.dockerwebapp.repository.MessageRepository;
 import com.dockerwebapp.repository.UserManagementRepository;
 import com.dockerwebapp.repository.impl.UserManagementRepositoryImpl;
 
@@ -21,6 +22,10 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     public UserManagementServiceImpl() {
         this.userRepository = new UserManagementRepositoryImpl();
+    }
+
+    public UserManagementServiceImpl(UserManagementRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -55,12 +60,13 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     @Override
-    public User getByUsername(String username) throws SQLException {
-        return null;
+    public UserDto getByUsername(String username) throws SQLException {
+        UserDto user = userManagementMapper.convert(userRepository.getByUsername(username));
+        return user;
     }
 
     @Override
-    public User getById(Long id) throws SQLException {
+    public UserDto getById(Long id) throws SQLException {
         UserDto user = userManagementMapper.convert(userRepository.getById(id));
         return user;
     }

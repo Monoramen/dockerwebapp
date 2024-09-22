@@ -4,8 +4,9 @@ import com.dockerwebapp.model.Chat;
 import com.dockerwebapp.model.User;
 
 import java.util.List;
+import java.util.Objects;
 
-public class UserDto extends User {
+public class UserDto {
     private Long id;
     private String username;
     private String firstName;
@@ -13,6 +14,7 @@ public class UserDto extends User {
     private String about;
     private String password;
     private List<Chat> chats;
+
 
     public Long getId() {
         return id;
@@ -72,6 +74,24 @@ public class UserDto extends User {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true; // Сравнение ссылок
+        if (!(o instanceof UserDto)) return false; // Проверка типа
+        UserDto userDto = (UserDto) o; // Приведение типа
+        return Objects.equals(id, userDto.id) && // Сравнение полей
+                Objects.equals(username, userDto.username) &&
+                Objects.equals(firstName, userDto.firstName) &&
+                Objects.equals(lastName, userDto.lastName) &&
+                Objects.equals(about, userDto.about) &&
+                Objects.equals(password, userDto.password);
+        // Не сравниваем chats, если это не нужно
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, firstName, lastName, about, password); // Генерация хэш-кода на основе полей
+    }
+    @Override
     public String toString() {
         return "UserDto{" +
                 "id=" + id +
@@ -83,4 +103,5 @@ public class UserDto extends User {
                 ", chats=" + chats +
                 '}';
     }
+
 }

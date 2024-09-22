@@ -1,6 +1,7 @@
 package com.dockerwebapp.servlet;
 
 
+import com.dockerwebapp.model.User;
 import com.dockerwebapp.service.impl.UserManagementServiceImpl;
 import com.dockerwebapp.servlet.dto.UserDto;
 import com.dockerwebapp.servlet.dto.CreateUserDto;
@@ -30,14 +31,10 @@ public class UserServlet extends HttpServlet {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
     }
-    @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("Service method called");
-        super.service(req, resp);
-    }
+
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "User ID is required");
@@ -45,7 +42,7 @@ public class UserServlet extends HttpServlet {
         }
         try {
             Long userId = getUserIdFromUrl(pathInfo);
-            UserDto userDto = (UserDto) userService.getById(userId); // Предполагается, что метод существует
+            UserDto userDto =  userService.getById(userId); // Предполагается, что метод существует
             if (userDto != null) {
                 resp.setContentType("application/json");
                 resp.setStatus(HttpServletResponse.SC_OK);
@@ -59,8 +56,9 @@ public class UserServlet extends HttpServlet {
     }
 
 
+
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("Received POST request for adding user");
 
         // Убедитесь, что тело запроса не пустое
@@ -106,7 +104,7 @@ public class UserServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
 
         if (pathInfo == null || pathInfo.equals("/")) {

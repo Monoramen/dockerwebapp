@@ -23,6 +23,10 @@ public class ChatServiceImpl implements ChatService {
 
     }
 
+    public ChatServiceImpl(ChatRepository chatRepository) { // Конструктор для внедрения зависимости
+        this.chatRepository = chatRepository;
+    }
+
     @Override
     public void addChat(ChatDto chatDto) throws SQLException {
         // Преобразуем ChatDto в Chat

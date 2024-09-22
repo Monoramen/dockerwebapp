@@ -16,7 +16,7 @@ public interface UserManagementMapper {
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "lastName", target = "lastName")
     @Mapping(source = "about", target = "about")
-    @Mapping(source = "chats", target = "chats")
+
     UserDto convert(User user);
 
     @Mapping(source = "id", target = "id")
@@ -24,7 +24,6 @@ public interface UserManagementMapper {
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "lastName", target = "lastName")
     @Mapping(source = "about", target = "about")
-    @Mapping(source = "chats", target = "chats")
     User convert(UserDto userDto);
 
 }

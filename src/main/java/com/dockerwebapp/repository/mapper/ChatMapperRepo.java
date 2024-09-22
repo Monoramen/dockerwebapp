@@ -9,8 +9,8 @@ import java.util.List;
 
 public class ChatMapperRepo {
     public static Chat mapResultSetToChat(ResultSet resultSet) throws SQLException {
-        Long id = resultSet.getLong("chat_id");
-        String name = resultSet.getString("chat_name");
+        Long id = resultSet.getLong("id");
+        String name = resultSet.getString("name");
 
         // Проверка на null для id
         if (resultSet.wasNull()) {
@@ -23,16 +23,16 @@ public class ChatMapperRepo {
                 .setName(name)
                 .build(); // Возвращаем готовый объект Chat
 
-        // Извлекаем идентификаторы участников
-        List<Long> participantIds = new ArrayList<>();
-        do {
-            Long participantId = resultSet.getLong("user_id"); // Предполагается, что user_id извлекается из запроса
-            if (!resultSet.wasNull()) {
-                participantIds.add(participantId);
-            }
-        } while (resultSet.next());
-
-        chat.setParticipantIds(participantIds); // Устанавливаем идентификаторы участников в чат
+//        // Извлекаем идентификаторы участников
+//        List<Long> participantIds = new ArrayList<>();
+//        do {
+//            Long participantId = resultSet.getLong("user_id"); // Предполагается, что user_id извлекается из запроса
+//            if (!resultSet.wasNull()) {
+//                participantIds.add(participantId);
+//            }
+//        } while (resultSet.next());
+//
+//        chat.setParticipantIds(participantIds); // Устанавливаем идентификаторы участников в чат
 
         return chat;
     }

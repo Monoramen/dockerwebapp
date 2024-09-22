@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserMapper {
-
     public static User mapResultSetToUser(ResultSet resultSet) throws SQLException {
         Long id = resultSet.getLong("id");
         String username = resultSet.getString("username");

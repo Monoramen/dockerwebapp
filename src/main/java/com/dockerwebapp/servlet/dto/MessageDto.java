@@ -17,7 +17,16 @@ public class MessageDto {
         this.chatId = chatId;
     }
 
+    public MessageDto(Long id, String text, String dateTime, Long senderId, Long chatId) {
+        this.id = id;
+        this.text = text;
+        this.dateTime = dateTime;
+        this.senderId = senderId;
+        this.chatId = chatId;
+    }
 
+    // Конструктор без параметров (если нужен)
+    public MessageDto() {}
 
     // Геттеры и сеттеры
 

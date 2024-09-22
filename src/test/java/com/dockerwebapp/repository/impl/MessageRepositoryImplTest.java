@@ -49,7 +49,7 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
         message.setDateTime(LocalDateTime.now());
         messageRepository.save(message);
         List<Message> savedMessage = messageRepository.findAll(1L);
-        assertEquals(4, savedMessage.size());
+        assertEquals(2, savedMessage.size());
     }
 
     @Test

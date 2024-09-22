@@ -31,12 +31,7 @@ class WholeEmptyTableTest extends AbstractDatabaseTest {
         });
     }
 
-    @Test
-    void testNotExistsUserTablefindAl() {
-        assertThrows(SQLException.class, () -> {
-            userManagementRepository.findAll();
-        });
-    }
+
 
     @Test
     void testNotExistsTableGetById() {

@@ -76,26 +76,52 @@ public class ChatRepositoryImpl implements ChatRepository {
 
     @Override
     public void deleteChat(Long chatId) throws SQLException {
+        // Проверяем, существует ли чат
+        String checkChatSql = "SELECT COUNT(*) FROM chats WHERE id = ?";
+        int count = queryExecutor.executeQuery(checkChatSql, new Object[]{chatId}, resultSet -> {
+            try {
+                resultSet.next();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                return resultSet.getInt(1);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        if (count == 0) {
+            throw new SQLException("Chat with ID " + chatId + " does not exist."); // Выбрасываем исключение, если чат не найден
+        }
+
+        // Удаляем участников
         String deleteParticipantsSql = "DELETE FROM chat_participants WHERE chat_id = ?";
         queryExecutor.executeUpdate(deleteParticipantsSql, new Object[]{chatId});
 
+        // Удаляем чат
         String deleteChatSql = "DELETE FROM chats WHERE id = ?";
         queryExecutor.executeUpdate(deleteChatSql, new Object[]{chatId});
     }
 
     @Override
     public List<Chat> getUserChats(Long userId) throws SQLException {
-        String sql = "SELECT c.id AS id, c.name AS name " +
+        String sql = "SELECT c.id AS id, c.name AS name, cp.user_id AS user_id " +
                 "FROM chats c " +
                 "JOIN chat_participants cp ON c.id = cp.chat_id " +
                 "WHERE cp.user_id = ?";
+
         return queryExecutor.executeQuery(sql,
                 new Object[]{userId},
                 resultSet -> {
                     List<Chat> chats = new ArrayList<>();
                     try {
                         while (resultSet.next()) {
-                            chats.add(ChatMapperRepo.mapResultSetToChat(resultSet)); // Используем маппер
+                            // Создаем новый объект Chat для каждого результата
+                            Chat chat = ChatMapperRepo.mapResultSetToChat(resultSet);
+                            if (chat != null) {
+                                chats.add(chat); // Добавляем чат в список
+                            }
                         }
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
@@ -154,6 +180,7 @@ public class ChatRepositoryImpl implements ChatRepository {
             return null; // Если чат не найден, возвращаем null
         });
     }
+
     // Метод для получения пользователя по ID
     private User getUserById(Long userId) throws SQLException {
         String sql = "SELECT id, username FROM users WHERE id = ?";

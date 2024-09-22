@@ -118,8 +118,8 @@ public class Chat {
         return "Chat{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", participantsCount=" + participantIds.size() + // Количество участников по ID
-                ", messagesCount=" + messages.size() + // Количество сообщений
+                ", participantsId=" + participantIds.size()+
+                ", messages=" + messages +
                 '}';
     }
 }
