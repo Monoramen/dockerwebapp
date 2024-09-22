@@ -25,8 +25,8 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
     }
 
     @Test
-    void testSaveAndFindMessage() throws SQLException {
-        List<Message> savedMessage = messageRepository.findAll();
+    void testFindAllMessage() throws SQLException {
+        List<Message> savedMessage = messageRepository.findAll(1L);
         assertNotNull(savedMessage);
     }
 
@@ -48,7 +48,7 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
         message.setSenderId(1L);
         message.setDateTime(LocalDateTime.now());
         messageRepository.save(message);
-        List<Message> savedMessage = messageRepository.findAll();
+        List<Message> savedMessage = messageRepository.findAll(1L);
         assertEquals(4, savedMessage.size());
     }
 
@@ -95,5 +95,28 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
         // Дополнительные проверки на содержание сообщений
         assertEquals(2, messages.size()); // Предполагаем, что в чате 1 два сообщения
     }
+    @Test
+    void testFindAllByChatId() throws SQLException {
+        List<Message> expectedMessages = List.of(
+                new Message(1L, "Hello, this is Jane", LocalDateTime.of(2024, 9, 22, 18, 38, 52), 1L, 1L),
+                new Message(2L, "Hi Jane, this is Michael", LocalDateTime.of(2024, 9, 22, 18, 38, 52), 2L, 1L)
+        );
+
+        List<Message> actualMessages = messageRepository.findAll(1L);
+
+        assertEquals(expectedMessages.size(), actualMessages.size(), "Message sizes should match");
+
+        for (int i = 0; i < expectedMessages.size(); i++) {
+            Message expected = expectedMessages.get(i);
+            Message actual = actualMessages.get(i);
+
+            assertEquals(expected.getId(), actual.getId(), "Message ID should match");
+            assertEquals(expected.getText(), actual.getText(), "Message text should match");
+            assertEquals(expected.getSenderId(), actual.getSenderId(), "Sender ID should match");
+            assertEquals(expected.getChatId(), actual.getChatId(), "Chat ID should match");
+            // Игнорируем dateTime для сравнения
+        }
+    }
+
 
 }

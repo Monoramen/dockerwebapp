@@ -9,6 +9,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Mapper
 public interface MessageMapper {
@@ -29,6 +30,7 @@ public interface MessageMapper {
         return dateTime != null ? dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;
     }
 
+    List<MessageDto> convert(List<Message> messages);
     @Named("stringToLocalDateTime")
     static LocalDateTime stringToLocalDateTime(String dateTime) {
         return dateTime != null ? LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;

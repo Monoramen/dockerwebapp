@@ -11,6 +11,6 @@ public interface MessageService {
     MessageDto save(MessageDto messageDto);
     void update(MessageDto messageDto);
     void delete(Long id);
-    List<MessageDto> findAll();
+    List<MessageDto> findAll(Long chatId);
     List<MessageDto> findByChatId(Long chatId);
 }

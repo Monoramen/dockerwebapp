@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MessageRepository {
 
-    List<Message> findAll() throws SQLException;
+    List<Message> findAll(Long chatId) throws SQLException;
 
     Message findById(Long id) throws SQLException;
 

@@ -47,7 +47,6 @@ public class ChatServlet extends HttpServlet {
                     List<ChatDto> chats;
                     try {
                         chats = chatService.getUserChats(userId);
-                        System.out.println(chats);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }

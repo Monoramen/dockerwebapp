@@ -61,7 +61,7 @@ public class MessageDto {
                 ", text='" + text + '\'' +
                 ", dateTime='" + dateTime + '\'' +
                 ", senderId='" + senderId + '\'' +
-                ", chatName='" + chatId + '\'' +
+                ", chatId='" + chatId + '\'' +
                 '}';
     }
 }

@@ -8,6 +8,7 @@ import com.dockerwebapp.repository.ChatRepository;
 import com.dockerwebapp.repository.mapper.ChatMapperRepo;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,10 +135,11 @@ public class ChatRepositoryImpl implements ChatRepository {
                         Long messageId = resultSet.getLong("message_id");
                         String messageText = resultSet.getString("message_text");
                         Long senderId = resultSet.getLong("sender_id"); // Получаем ID отправителя
+                        LocalDateTime dateTime = resultSet.getTimestamp("dateTime").toLocalDateTime(); // Получаем ID отправителя
 
                         if (messageId != null) { // Проверяем, есть ли сообщение
                              // Получаем пользователя по ID отправителя
-                            Message message = new Message(messageId, messageText, senderId, id); // Используем идентификатор чата
+                            Message message = new Message(messageId, messageText, dateTime , senderId, id); // Используем идентификатор чата
                             messages.add(message);
                         }
                     } while (resultSet.next());

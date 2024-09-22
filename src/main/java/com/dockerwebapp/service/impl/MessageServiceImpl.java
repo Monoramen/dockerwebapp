@@ -5,6 +5,7 @@ import com.dockerwebapp.repository.MessageRepository;
 
 
 import com.dockerwebapp.repository.impl.MessageRepositoryImpl;
+import com.dockerwebapp.repository.mapper.MessageMapperRepo;
 import com.dockerwebapp.service.MessageService;
 import com.dockerwebapp.servlet.dto.MessageDto;
 import com.dockerwebapp.servlet.mapper.MessageMapper;
@@ -25,11 +26,10 @@ public class MessageServiceImpl implements MessageService {
 
 
     @Override
-    public List<MessageDto> findAll() {
+    public List<MessageDto> findAll(Long chatId) {
         List<Message> messages;
         try {
-            messages = messageRepository.findAll();
-            System.out.println("Messages retrieved: " + messages);
+           messages = messageRepository.findAll(chatId);
         } catch (SQLException e) {
             System.err.println("SQL Exception in findAll: ");
             e.printStackTrace();

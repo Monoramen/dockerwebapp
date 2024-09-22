@@ -17,36 +17,29 @@ public class MessageRepositoryImpl implements MessageRepository {
     }
 
     @Override
-    public List<Message> findAll() throws SQLException {
-        String sql = "SELECT " +
-                "    m.id, " +
-                "    m.text, " +
-                "    m.date_time, " +
-                "    u.id AS sender_id, " +
-                "    u.username AS sender_username, " +
-                "    c.id AS chat_id, " +
-                "    c.name AS chat_name " +
+    public List<Message> findAll(Long chatId) throws SQLException {
+        String sql = "SELECT m.id, m.text, m.date_time, " +
+                "m.sender_id, " + // Убедитесь, что здесь есть запятая
+                "m.chat_id " +
                 "FROM messages m " +
-                "JOIN users u ON m.sender_id = u.id " +
-                "JOIN chats c ON m.chat_id = c.id";
+                "WHERE m.chat_id = ?";
 
         return queryExecutor.executeQuery(
                 sql,
-                new Object[]{},
+                new Object[]{chatId},
                 resultSet -> {
-                    List<Message> result = new ArrayList<>();
+                    List<Message> messages = new ArrayList<>();
                     try {
                         while (resultSet.next()) {
-                            result.add(MessageMapperRepo.mapResultSetToMessage(resultSet));
+                            messages.add(MessageMapperRepo.mapResultSetToMessage(resultSet));
                         }
                     } catch (SQLException e) {
-                        throw new RuntimeException(e);
+                        throw new RuntimeException("Error processing result set", e);
                     }
-
-                    System.out.println("MessageRepositoryImpl retrieved: " + result);
-                    return result;
+                    return messages;
                 });
     }
+
 
     @Override
     public Message findById(Long id) throws SQLException {
@@ -88,7 +81,7 @@ public class MessageRepositoryImpl implements MessageRepository {
         String sql = "INSERT INTO messages (text, sender_id, chat_id, date_time) VALUES (?, ?, ?, ?)";
 
         // Используем executeUpdate для выполнения операции вставки
-        int rowsInserted = queryExecutor.executeUpdate(
+     queryExecutor.executeUpdate(
                 sql,
                 new Object[]{
                         message.getText(),

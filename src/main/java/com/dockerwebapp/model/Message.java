@@ -24,10 +24,10 @@ public class Message {
 
     private Long chatId; // чат, в котором было отправлено сообщение
 
-    public Message(Long id, String text, Long senderId, Long chatId) {
+    public Message(Long id, String text,LocalDateTime dateTime, Long senderId, Long chatId) {
         this.id = id;
         this.text = text;
-        this.dateTime = LocalDateTime.now();
+        this.dateTime = dateTime;
         this.senderId = senderId;
         this.chatId = chatId;
     }
