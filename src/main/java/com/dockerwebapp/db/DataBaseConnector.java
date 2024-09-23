@@ -17,7 +17,7 @@ public class DataBaseConnector implements ConnectionManager {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            e.getMessage();
             throw new RuntimeException("PostgreSQL driver not found", e);
         }
     }
@@ -37,7 +37,7 @@ public class DataBaseConnector implements ConnectionManager {
             this.db_user = properties.getProperty("db.user");
             this.db_password = properties.getProperty("db.password");
         } catch (IOException e) {
-            e.printStackTrace();
+            e.getMessage();
             throw new RuntimeException("Failed to load database properties", e);
         }
     }
@@ -47,8 +47,7 @@ public class DataBaseConnector implements ConnectionManager {
             Connection conn = DriverManager.getConnection(db_url, db_user, db_password);
             return conn;
         } catch (SQLException e) {
-            System.err.println("Failed to connect to the database:");
-            e.printStackTrace();
+            e.getMessage()      ;
             throw e;
         }
     }

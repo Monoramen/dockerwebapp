@@ -28,7 +28,6 @@ class UserManagementRepositoryImplTest  extends AbstractDatabaseTest {
             userManagementRepository.createUser(user);
 
             User actualUser = userManagementRepository.getByUsername("john_doe");
-            System.out.println(userManagementRepository.getByUsername("john_doe"));
             assertNotNull(actualUser);
             assertEquals(user.getUsername(),userManagementRepository.getByUsername("john_doe").getUsername());
         }
@@ -53,7 +52,6 @@ class UserManagementRepositoryImplTest  extends AbstractDatabaseTest {
                     .setAbout("Just a regular user.")
                     .build();
             userManagementRepository.updateUser(user);
-            System.out.println(userManagementRepository.getByUsername("jorjenford"));
             User updatedUser = userManagementRepository.getByUsername("jorjenford");
             assertEquals("updated_password", updatedUser.getPassword());
         }

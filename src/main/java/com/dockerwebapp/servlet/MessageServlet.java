@@ -48,7 +48,6 @@ public class MessageServlet extends HttpServlet {
                     try {
                         Long chatId = Long.valueOf(pathParts[2]);
                         List<MessageDto> messages = messageService.findAll(chatId);
-                        System.out.println("Messages retrieved: " + messages);
                         String jsonResponse = objectMapper.writeValueAsString(messages);
                         response.getWriter().write(jsonResponse);
                         response.setStatus(HttpServletResponse.SC_OK); //

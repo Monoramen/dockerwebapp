@@ -29,7 +29,7 @@ public class QueryExecutor {
                 return resultMapper.apply(resultSet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.getMessage();
             throw e;
         }
     }
@@ -40,7 +40,7 @@ public class QueryExecutor {
             setParameters(preparedStatement, params);
             return preparedStatement.executeUpdate(); // Возвращает количество затронутых строк
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.getMessage();
             throw e;
         }
     }

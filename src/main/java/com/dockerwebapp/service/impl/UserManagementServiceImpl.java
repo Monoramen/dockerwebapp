@@ -1,7 +1,6 @@
 package com.dockerwebapp.service.impl;
 
 import com.dockerwebapp.model.User;
-import com.dockerwebapp.repository.MessageRepository;
 import com.dockerwebapp.repository.UserManagementRepository;
 import com.dockerwebapp.repository.impl.UserManagementRepositoryImpl;
 
@@ -14,7 +13,6 @@ import com.dockerwebapp.servlet.mapper.UserManagementMapper;
 import java.sql.SQLException;
 
 public class UserManagementServiceImpl implements UserManagementService {
-
     private UserManagementRepository userRepository;
     private final UserManagementMapper userManagementMapper = UserManagementMapper.INSTANCE;
     private final CreateUserMapper createUserMapper = CreateUserMapper.INSTANCE;
@@ -34,7 +32,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         try {
             userRepository.createUser(user);
         } catch (SQLException e) {
-            e.printStackTrace();
+
             throw new RuntimeException("Database error while creating user: " + e.getMessage(), e);
         }
     }
@@ -45,7 +43,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         try {
             userRepository.updateUser(user);
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.getMessage();
         }
 
     }
@@ -55,20 +53,34 @@ public class UserManagementServiceImpl implements UserManagementService {
         try {
             userRepository.deleteUser(username);
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.getMessage();
         }
     }
 
     @Override
     public UserDto getByUsername(String username) throws SQLException {
-        UserDto user = userManagementMapper.convert(userRepository.getByUsername(username));
-        return user;
+        try {
+            if (username != null) {
+                UserDto user = userManagementMapper.convert(userRepository.getByUsername(username));
+                return user;
+            }
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+        return null;
     }
 
     @Override
     public UserDto getById(Long id) throws SQLException {
-        UserDto user = userManagementMapper.convert(userRepository.getById(id));
-        return user;
+        try {
+            if (id != null) {
+                UserDto user = userManagementMapper.convert(userRepository.getById(id));
+                return user;
+            }
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+    return null;
     }
 
 }

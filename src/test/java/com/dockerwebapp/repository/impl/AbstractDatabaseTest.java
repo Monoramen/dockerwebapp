@@ -32,13 +32,11 @@ public abstract class AbstractDatabaseTest {
     @BeforeAll
     static void setUp()  {
         postgresContainer.start();
-        System.out.println("PostgreSQL container started with URL: " + postgresContainer.getJdbcUrl());
     }
 
     @AfterAll
     static void tearDown()  {
         postgresContainer.stop();
-        System.out.println("PostgreSQL container stopped.");
     }
 
     protected void initializeDatabaseConnection() throws SQLException {
@@ -54,7 +52,6 @@ public abstract class AbstractDatabaseTest {
             assertNotNull(connection, "Connection should not be null");
             queryExecutor = new QueryExecutor(properties);
         } catch (SQLException e) {
-            System.err.println("Failed to connect to the database: " + e.getMessage());
             throw e;
         }
     }
@@ -64,7 +61,6 @@ public abstract class AbstractDatabaseTest {
         try (Connection connection = dbConnector.getConnection();
              Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
-            System.out.println("Cleared the entire database.");
         }
     }
 }

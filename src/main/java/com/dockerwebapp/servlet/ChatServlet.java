@@ -55,7 +55,6 @@ public class ChatServlet extends HttpServlet {
                 Long chatId = Long.valueOf(pathParts[3]); // Предполагается, что chatId находится на index 4
                 Chat chat;
                 chat = chatService.getChatById(chatId);
-                System.out.println(chat);
                 response.setContentType("application/json");
                 response.setStatus(HttpServletResponse.SC_OK);
                 objectMapper.writeValue(response.getOutputStream(), chat);
@@ -97,7 +96,6 @@ public class ChatServlet extends HttpServlet {
                 try {
                     Long chatId = Long.valueOf(pathParts[3]);
                     ChatDto chatDto = objectMapper.readValue(request.getInputStream(), ChatDto.class);
-                    System.out.println(chatDto);
                     chatService.addChat(chatDto); // Предполагается, что метод существует
 
                     response.setStatus(HttpServletResponse.SC_CREATED);
