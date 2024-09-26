@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ChatRepositoryImplTest  extends AbstractDatabaseTest {
+
     private ChatRepositoryImpl chatRepository;
 
     @BeforeEach
@@ -46,6 +47,7 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
 
     @Test
     void testDeleteChat() throws SQLException {
+        System.out.println(chatRepository.getUserChats(1L));
         Chat chat = new Chat();
         chat.setId(1L);
         chatRepository.deleteChat(chat.getId());
@@ -57,6 +59,7 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
 
     @Test
     void testDeleteNotExitsChat() throws SQLException {
+        System.out.println(chatRepository.getUserChats(1L));
         Chat chat = new Chat();
         chat.setId(5L);
         assertThrows(SQLException.class, () -> chatRepository.deleteChat(chat.getId()));

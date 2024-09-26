@@ -59,7 +59,7 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
                     return resultSet.getLong("id");
                 }
             } catch (SQLException e) {
-                e.getMessage();
+                e.printStackTrace();
             }
             return null; // Если пользователь не найден, возвращаем null
         });
@@ -74,6 +74,8 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
 
             String deleteUserSql = "DELETE FROM users WHERE id = ?";
             queryExecutor.executeUpdate(deleteUserSql, new Object[]{userId});
+        } else {
+            System.out.println("User with username '" + username + "' not found.");
         }
     }
 
@@ -87,7 +89,7 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
                     return UserManagementMapper.mapResultSetToUserManagement(resultSet);
                 }
             } catch (SQLException e) {
-                e.getMessage();
+                e.printStackTrace();
             }
             return null;
         });
@@ -103,10 +105,11 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
         return queryExecutor.executeQuery(sql, new Object[]{id}, resultSet -> {
             try {
                 if (resultSet.next()) {
+                    System.out.println("Found user: " +UserManagementMapper.mapResultSetToUser(resultSet));
                     return UserManagementMapper.mapResultSetToUser(resultSet);
                 }
             } catch (SQLException e) {
-                e.getMessage();
+                e.printStackTrace();
             }
             return null;
         });

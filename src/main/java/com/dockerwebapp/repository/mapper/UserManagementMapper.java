@@ -59,7 +59,7 @@ public class UserManagementMapper {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(chatsJson, new TypeReference<List<Chat>>() {});
         } catch (JsonProcessingException e) {
-            e.getMessage();
+            e.printStackTrace();
             return List.of();
         }
     }

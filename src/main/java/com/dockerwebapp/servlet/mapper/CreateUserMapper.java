@@ -14,6 +14,5 @@ public interface CreateUserMapper {
     @Mapping(source = "password", target = "password")
     User convert(CreateUserDto CreateUserDto);
 
-
 }
 

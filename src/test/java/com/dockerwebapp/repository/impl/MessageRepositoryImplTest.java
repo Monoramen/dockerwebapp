@@ -82,8 +82,16 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
     void testFindByChatId() throws SQLException {
         // Предполагаем, что в базе данных уже есть данные для чата с id = 1
         List<Message> messages = messageRepository.findByChatId(1L);
+
+        // Проверяем, что сообщения не пустые
         assertNotNull(messages);
         assertFalse(messages.isEmpty(), "Messages list should not be empty");
+
+        // Выводим сообщения для проверки
+        for (Message message : messages) {
+            System.out.println(message);
+        }
+
         // Дополнительные проверки на содержание сообщений
         assertEquals(2, messages.size()); // Предполагаем, что в чате 1 два сообщения
     }

@@ -35,7 +35,7 @@ public class MessageServiceImpl implements MessageService {
            messages = messageRepository.findAll(chatId);
         } catch (SQLException e) {
             System.err.println("SQL Exception in findAll: ");
-            e.getMessage();
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
         return messages.stream()
@@ -48,7 +48,10 @@ public class MessageServiceImpl implements MessageService {
         List<Message> messages;
         try {
             messages = messageRepository.findByChatId(chatId);
+            System.out.println("Messages retrieved: " + messages);
         } catch (SQLException e) {
+            System.err.println("SQL Exception in findByChatId: ");
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
         return messages.stream()

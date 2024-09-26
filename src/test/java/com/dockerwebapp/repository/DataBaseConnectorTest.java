@@ -49,8 +49,10 @@ class DataBaseConnectorTest {
         // Получаем соединение с базой данных
         try ( Connection connection = dataBaseConnector.getConnection()){
             assertNotNull(connection);
+            // Дополнительные проверки соединения можно добавить здесь
         } catch (SQLException e) {
-            e.getMessage();
+            e.printStackTrace();
+            fail("Failed to connect to the database");
         }
     }
 
@@ -61,9 +63,9 @@ class DataBaseConnectorTest {
             testProperties.load(getClass().getClassLoader().getResourceAsStream("db-test.properties"));
             DataBaseConnector dataBaseConnector = new DataBaseConnector(testProperties);
             Connection connection = dataBaseConnector.getConnection();
-
+            System.out.println(connection);
         } catch (Exception e) {
-            e.getMessage();
+            e.printStackTrace();
         }
     }
 
