@@ -34,7 +34,7 @@ public class UserServlet extends HttpServlet {
 
 
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "User ID is required");
@@ -58,7 +58,7 @@ public class UserServlet extends HttpServlet {
 
 
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
         System.out.println("Received POST request for adding user");
 
         // Убедитесь, что тело запроса не пустое
@@ -81,7 +81,7 @@ public class UserServlet extends HttpServlet {
 
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
 
         System.out.println("Received POST request for update user");
         String pathInfo = req.getPathInfo();
@@ -104,7 +104,7 @@ public class UserServlet extends HttpServlet {
     }
 
     @Override
-    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
         String pathInfo = req.getPathInfo();
 
         if (pathInfo == null || pathInfo.equals("/")) {
@@ -114,8 +114,8 @@ public class UserServlet extends HttpServlet {
         String username = pathInfo.split("/")[1];
 
         try {
-            userService.deleteUser(username); // Предполагается, что метод существует и принимает имя пользователя
-            resp.setStatus(HttpServletResponse.SC_NO_CONTENT); // Успешное удаление
+            userService.deleteUser(username);
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (SQLException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to delete user: " + e.getMessage());
         }
