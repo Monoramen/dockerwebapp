@@ -20,17 +20,10 @@ public class UserManagementMapper {
         String about = resultSet.getString("about");
         String password = resultSet.getString("password");
 
-        // Получаем сообщения и чаты из JSO
-       // String chatsJson = resultSet.getString("chats");
-
-        // Здесь вам нужно будет преобразовать JSON в объекты (например, List<Message> или List<Chat>)
-        //List<Chat> chats = parseChats(chatsJson);
-
         return new User.UserBuilder(id, username, password)
                 .setFirstName(firstName)
                 .setLastName(lastName)
                 .setAbout(about)
-                //  .setChats(chats) // Убедитесь, что метод setChats существует
                 .build();
     }
 

@@ -1,7 +1,6 @@
 package com.dockerwebapp.servlet;
 
 
-import com.dockerwebapp.model.User;
 import com.dockerwebapp.service.impl.UserManagementServiceImpl;
 import com.dockerwebapp.servlet.dto.UserDto;
 import com.dockerwebapp.servlet.dto.CreateUserDto;
@@ -22,8 +21,8 @@ import java.sql.SQLException;
         urlPatterns = {"/api/users/*"}
 )
 public class UserServlet extends HttpServlet {
-    private UserManagementServiceImpl userService;
-    private ObjectMapper objectMapper;
+    private transient UserManagementServiceImpl userService;
+    private transient ObjectMapper objectMapper;
 
     @Override
     public void init() throws ServletException {
@@ -59,11 +58,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
-        System.out.println("Received POST request for adding user");
-
-        // Убедитесь, что тело запроса не пустое
         if (req.getContentLength() == 0) {
-            System.out.println("Request body is empty");
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Request body is empty");
             return;
         }
@@ -72,7 +67,6 @@ public class UserServlet extends HttpServlet {
             CreateUserDto CreateUserDto = objectMapper.readValue(req.getInputStream(), CreateUserDto.class);
             userService.createUser(CreateUserDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
-            System.out.println("User created successfully");
         } catch (Exception e) {
             e.printStackTrace();
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create user: " + e.getMessage());
@@ -82,8 +76,6 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
-
-        System.out.println("Received POST request for update user");
         String pathInfo = req.getPathInfo();
 
         if (pathInfo == null || pathInfo.equals("/")) {
@@ -91,12 +83,10 @@ public class UserServlet extends HttpServlet {
             return;
         }
         Long userId = getUserIdFromUrl(pathInfo);
-        System.out.println("User ID: " + req.getInputStream());
         try {
             UserDto userDto = objectMapper.readValue(req.getInputStream(), UserDto.class);
-
-            userDto.setId(userId); // Устанавливаем ID пользователя из URL
-            userService.updateUser(userDto); // Предполагается, что метод существует
+            userDto.setId(userId);
+            userService.updateUser(userDto);
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (SQLException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to update user: " + e.getMessage());

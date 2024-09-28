@@ -1,12 +1,9 @@
 package com.dockerwebapp.service.impl;
 
 import com.dockerwebapp.model.Message;
-import com.dockerwebapp.repository.ChatRepository;
+
 import com.dockerwebapp.repository.MessageRepository;
-
-
 import com.dockerwebapp.repository.impl.MessageRepositoryImpl;
-import com.dockerwebapp.repository.mapper.MessageMapperRepo;
 import com.dockerwebapp.service.MessageService;
 import com.dockerwebapp.servlet.dto.MessageDto;
 import com.dockerwebapp.servlet.mapper.MessageMapper;
@@ -34,9 +31,7 @@ public class MessageServiceImpl implements MessageService {
         try {
            messages = messageRepository.findAll(chatId);
         } catch (SQLException e) {
-            System.err.println("SQL Exception in findAll: ");
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
         return messages.stream()
                 .map(messageMapper::convert)
@@ -48,11 +43,8 @@ public class MessageServiceImpl implements MessageService {
         List<Message> messages;
         try {
             messages = messageRepository.findByChatId(chatId);
-            System.out.println("Messages retrieved: " + messages);
         } catch (SQLException e) {
-            System.err.println("SQL Exception in findByChatId: ");
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
         return messages.stream()
                 .map(messageMapper::convert)
@@ -65,7 +57,7 @@ public class MessageServiceImpl implements MessageService {
         try {
             message = messageRepository.findById(id);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
         return messageMapper.convert(message);  // Преобразуем сущность в DTO
     }
@@ -77,7 +69,7 @@ public class MessageServiceImpl implements MessageService {
         try {
             messageRepository.save(message);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
         return messageMapper.convert(message);  // Возвращаем сохранённое сообщение в виде DTO
     }
@@ -88,7 +80,7 @@ public class MessageServiceImpl implements MessageService {
         try {
             messageRepository.update(message);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -97,7 +89,7 @@ public class MessageServiceImpl implements MessageService {
         try {
             messageRepository.delete(id);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 }

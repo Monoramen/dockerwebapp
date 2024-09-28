@@ -3,7 +3,6 @@ package com.dockerwebapp.servlet;
 
 import com.dockerwebapp.service.MessageService;
 import com.dockerwebapp.service.impl.MessageServiceImpl;
-import com.dockerwebapp.servlet.dto.ChatDto;
 import com.dockerwebapp.servlet.dto.MessageDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -25,8 +24,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class MessageServlet extends HttpServlet {
 
-    private MessageService messageService;
-    private ObjectMapper objectMapper;
+    private transient MessageService messageService;
+    private transient ObjectMapper objectMapper;
 
     @Override
     public void init() throws ServletException {
@@ -38,8 +37,7 @@ public class MessageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+
 
             if (pathInfo != null) {
                 String[] pathParts = pathInfo.split("/");
@@ -51,6 +49,8 @@ public class MessageServlet extends HttpServlet {
                         System.out.println("Messages retrieved: " + messages);
                         String jsonResponse = objectMapper.writeValueAsString(messages);
                         response.getWriter().write(jsonResponse);
+                        response.setContentType("application/json");
+                        response.setCharacterEncoding("UTF-8");
                         response.setStatus(HttpServletResponse.SC_OK); //
                     } catch (Exception e) {
                         response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to get messages: " + e.getMessage());
@@ -63,8 +63,6 @@ public class MessageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
 
         if (pathInfo != null) {
             String[] pathParts = pathInfo.split("/");
@@ -76,6 +74,8 @@ public class MessageServlet extends HttpServlet {
                     // Устанавливаем chatId из пути
                     messageDto.setChatId(chatId);
                     messageService.save(messageDto); // Сохраняем сообщение
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
                     response.setStatus(HttpServletResponse.SC_CREATED); // Успешное создание сообщения
                 } catch (Exception e) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create message: " + e.getMessage());
@@ -92,8 +92,6 @@ public class MessageServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
 
         if (pathInfo != null) {
             String[] pathParts = pathInfo.split("/");
@@ -102,6 +100,8 @@ public class MessageServlet extends HttpServlet {
                 try {
                     MessageDto messageDto = objectMapper.readValue(request.getReader(), MessageDto.class);
                     messageService.update(messageDto); // Сохраняем сообщение
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
                     response.setStatus(HttpServletResponse.SC_CREATED); // Успешное создание сообщения
                 } catch (Exception e) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create message: " + e.getMessage());

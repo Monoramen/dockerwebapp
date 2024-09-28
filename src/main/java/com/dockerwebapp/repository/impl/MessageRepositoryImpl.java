@@ -34,7 +34,7 @@ public class MessageRepositoryImpl implements MessageRepository {
                             messages.add(MessageMapperRepo.mapResultSetToMessage(resultSet));
                         }
                     } catch (SQLException e) {
-                        throw new RuntimeException("Error processing result set", e);
+                        throw new IllegalArgumentException("Error processing result set", e);
                     }
                     return messages;
                 });
@@ -64,7 +64,7 @@ public class MessageRepositoryImpl implements MessageRepository {
                             return MessageMapperRepo.mapResultSetToMessage(resultSet);
                         }
                     } catch (SQLException e) {
-                        throw new RuntimeException(e);
+                        throw new IllegalArgumentException(e);
                     }
                     return null;  // Если сообщение не найдено, возвращаем null
                 }
@@ -132,7 +132,7 @@ public class MessageRepositoryImpl implements MessageRepository {
                             messages.add(MessageMapperRepo.mapResultSetToMessage(resultSet));
                         }
                     } catch (SQLException e) {
-                        throw new RuntimeException("Error processing result set", e);
+                        throw new IllegalArgumentException("Error processing result set", e);
                     }
 
                     return messages;

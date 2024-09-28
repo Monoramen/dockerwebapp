@@ -5,8 +5,7 @@ import com.dockerwebapp.model.User;
 import com.dockerwebapp.repository.UserManagementRepository;
 import com.dockerwebapp.repository.mapper.UserManagementMapper;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class UserManagementRepositoryImpl implements UserManagementRepository {
     private final QueryExecutor queryExecutor;
@@ -74,8 +73,6 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
 
             String deleteUserSql = "DELETE FROM users WHERE id = ?";
             queryExecutor.executeUpdate(deleteUserSql, new Object[]{userId});
-        } else {
-            System.out.println("User with username '" + username + "' not found.");
         }
     }
 
@@ -89,7 +86,7 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
                     return UserManagementMapper.mapResultSetToUserManagement(resultSet);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                new IllegalArgumentException(e);
             }
             return null;
         });
@@ -109,7 +106,7 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
                     return UserManagementMapper.mapResultSetToUser(resultSet);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                new IllegalArgumentException(e);
             }
             return null;
         });

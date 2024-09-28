@@ -68,7 +68,7 @@ public class ChatRepositoryImpl implements ChatRepository {
                     return resultSet.getInt(1) > 0; // Возвращаем true, если пользователь существует
                 }
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
             return false; // Пользователь не найден
         });
@@ -82,12 +82,12 @@ public class ChatRepositoryImpl implements ChatRepository {
             try {
                 resultSet.next();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
             try {
                 return resultSet.getInt(1);
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
         });
 
@@ -124,7 +124,7 @@ public class ChatRepositoryImpl implements ChatRepository {
                             }
                         }
                     } catch (SQLException e) {
-                        throw new RuntimeException(e);
+                        throw new IllegalArgumentException(e);
                     }
                     return chats;
                 });
@@ -175,7 +175,7 @@ public class ChatRepositoryImpl implements ChatRepository {
                     return chat; // Возвращаем объект Chat с сообщениями
                 }
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
             return null; // Если чат не найден, возвращаем null
         });
@@ -192,7 +192,7 @@ public class ChatRepositoryImpl implements ChatRepository {
                     return new User(id, username); // Предполагается наличие конструктора User(Long id, String username)
                 }
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
             return null; // Если пользователь не найден
         });

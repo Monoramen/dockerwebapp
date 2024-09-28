@@ -7,7 +7,6 @@ import com.dockerwebapp.servlet.dto.ChatDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebInitParam;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,8 +21,8 @@ import java.util.List;
         description = "Represents a Chat servlet for REST API transactions",
         urlPatterns = {"/api/user/*"})
 public class ChatServlet extends HttpServlet {
-    private ChatService chatService;
-    private ObjectMapper objectMapper;  // Для работы с JSON
+    private transient ChatService chatService;
+    private transient ObjectMapper objectMapper;  // Для работы с JSON
 
     @Override
     public void init() throws ServletException {
@@ -45,7 +44,7 @@ public class ChatServlet extends HttpServlet {
                     try {
                         chats = chatService.getUserChats(userId);
                     } catch (SQLException e) {
-                        throw new RuntimeException(e);
+                        throw new IllegalArgumentException(e);
                     }
                         response.setContentType("application/json");
                         response.setStatus(HttpServletResponse.SC_OK);
@@ -79,7 +78,7 @@ public class ChatServlet extends HttpServlet {
                     chatService.addChat(chatDto); // Предполагается, что метод существует
                     response.setStatus(HttpServletResponse.SC_CREATED);
                 } catch (Exception e) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create chat: " + e.getMessage());
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create chat");
                 }
             }
         }
@@ -95,14 +94,12 @@ public class ChatServlet extends HttpServlet {
 
             if (pathParts[2].equals("updateChat")) {
                 try {
-                    Long chatId = Long.valueOf(pathParts[3]);
                     ChatDto chatDto = objectMapper.readValue(request.getInputStream(), ChatDto.class);
                     System.out.println(chatDto);
                     chatService.addChat(chatDto); // Предполагается, что метод существует
-
                     response.setStatus(HttpServletResponse.SC_CREATED);
                 } catch (Exception e) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create chat: " + e.getMessage());
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create chat");
                 }
             }
         }
@@ -118,8 +115,7 @@ public class ChatServlet extends HttpServlet {
             if (pathParts[2].equals("deleteChat")) {
                 try {
                     Long chatId = Long.valueOf(pathParts[3]);
-                    chatService.deleteChat(chatId); // Предполагается, что метод существует
-
+                    chatService.deleteChat(chatId);
                     response.setStatus(HttpServletResponse.SC_CREATED);
                 } catch (Exception e) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create chat: " + e.getMessage());
@@ -128,9 +124,4 @@ public class ChatServlet extends HttpServlet {
         }
     }
 
-    private Long extractUserIdFromPath(String pathInfo) {
-        // Пример извлечения userId из URL: /api/users/{userId}/chats/
-        String[] parts = pathInfo.split("/");
-        return Long.valueOf(parts[2]); // Предполагаем, что userId находится на третьем месте
-    }
 }

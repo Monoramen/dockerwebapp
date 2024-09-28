@@ -1,8 +1,6 @@
 package com.dockerwebapp.repository.mapper;
 
-import com.dockerwebapp.model.Chat;
 import com.dockerwebapp.model.Message;
-import com.dockerwebapp.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,6 +8,7 @@ import java.time.LocalDateTime;
 
 
 public class MessageMapperRepo {
+
     public static Message mapResultSetToMessage(ResultSet resultSet) throws SQLException {
         Long id = resultSet.getLong("id");
         String text = resultSet.getString("text");

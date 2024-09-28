@@ -2,7 +2,6 @@ package com.dockerwebapp.service.impl;
 
 
 import com.dockerwebapp.model.Chat;
-import com.dockerwebapp.model.User;
 import com.dockerwebapp.repository.ChatRepository;
 
 import com.dockerwebapp.repository.impl.ChatRepositoryImpl;
@@ -15,8 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ChatServiceImpl implements ChatService {
-    private ChatRepository chatRepository;
-    private ChatsMapper chatsMapper = ChatsMapper.INSTANCE;
+    private transient ChatRepository chatRepository;
 
     public ChatServiceImpl() {
         this.chatRepository =  new ChatRepositoryImpl();
