@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 public class ChatServiceImpl implements ChatService {
     private transient ChatRepository chatRepository;
 
+
     public ChatServiceImpl() {
         this.chatRepository =  new ChatRepositoryImpl();
-
     }
 
     public ChatServiceImpl(ChatRepository chatRepository) { // Конструктор для внедрения зависимости
@@ -27,18 +27,27 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void addChat(ChatDto chatDto) throws SQLException {
-        // Преобразуем ChatDto в Chat
         Chat chat = new Chat();
         chat.setId(chatDto.getId());
         chat.setName(chatDto.getName());
 
-        // Добавляем участников из DTO
         if (chatDto.getParticipantIds() != null) {
             for (Long participantId : chatDto.getParticipantIds()) {
-                chat.addParticipant(participantId); // Используем ID участника
+                chat.addParticipant(participantId);
             }
         }
         chatRepository.addChat(chat);
+    }
+
+    @Override
+    public void updateChat(ChatDto chatDto) throws SQLException {
+        Chat chat = ChatsMapper.INSTANCE.convert(chatDto);
+        try {
+            chatRepository.updateChat(chat);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -52,19 +61,17 @@ public class ChatServiceImpl implements ChatService {
     }
 
 
-    @Override
-    public void updateChat(ChatDto chatDto) throws SQLException {
-        Chat chat = ChatsMapper.INSTANCE.convert(chatDto);
-        chatRepository.updateChat(chat);
-    }
+
 
     @Override
-    public Chat getChatById(Long chatId)  {
+    public ChatDto getChatById(Long chatId)  {
+        Chat chat;
         try {
-            return chatRepository.getChatById(chatId);
+            chat = chatRepository.getChatById(chatId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return  ChatsMapper.INSTANCE.convert(chat);
     }
 
     @Override

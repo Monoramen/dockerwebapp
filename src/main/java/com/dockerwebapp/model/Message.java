@@ -3,7 +3,6 @@ package com.dockerwebapp.model;
 
 
 import java.time.LocalDateTime;
-import java.sql.Timestamp;
 import java.util.Objects;
 
 
@@ -69,16 +68,6 @@ public class Message {
         this.dateTime = dateTime;
     }
 
-    // Конвертация LocalDateTime в Timestamp и наоборот
-    public static Timestamp toTimestamp(LocalDateTime dateTime) {
-        return dateTime == null ? null : Timestamp.valueOf(dateTime);
-    }
-
-    public static LocalDateTime fromTimestamp(Timestamp timestamp) {
-        return timestamp == null ? null : timestamp.toLocalDateTime();
-    }
-
-
 
     @Override
     public boolean equals(Object o) {
@@ -93,19 +82,13 @@ public class Message {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, text, dateTime, senderId, chatId);
-    }
-
-    // Переопределение toString для удобного отображения
-    @Override
     public String toString() {
         return "Message{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
                 ", dateTime=" + dateTime +
-                ", senderId=" + (senderId != null ? senderId : "null") + // Выводим ID отправителя
-                ", chatId=" + (chatId != null ? chatId : "null") + // Выводим ID чата вместо объекта
+                ", senderId=" + (senderId != null ? senderId : "null") +
+                ", chatId=" + (chatId != null ? chatId : "null") +
                 '}';
     }
 }

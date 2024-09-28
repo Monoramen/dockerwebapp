@@ -26,13 +26,13 @@ public class CreateUserDto {
         if (this == o) return true; // Сравнение ссылок
         if (!(o instanceof CreateUserDto)) return false; // Проверка типа
         CreateUserDto that = (CreateUserDto) o; // Приведение типа
-        return Objects.equals(username, that.username) && // Сравнение полей
+        return Objects.equals(username, that.username) &&
                 Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, password); // Генерация хэш-кода на основе полей
+        return Objects.hash(username, password);
     }
     @Override
     public String toString() {

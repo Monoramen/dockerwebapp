@@ -37,6 +37,10 @@ public class ChatDto {
         return participantIds; // Геттер для идентификаторов участников
     }
 
+    public void setParticipantIds(List<Long> participantIds) {
+        this.participantIds = participantIds; // Сеттер для идентификаторов участников
+    }
+
     @Override
     public String toString() {
         return "ChatDto{id=" + id + ", name='" + name + '\'' + ", participantIds=" + participantIds + '}';

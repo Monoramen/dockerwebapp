@@ -1,6 +1,7 @@
 package com.dockerwebapp.servlet.dto;
 
 
+import java.util.Objects;
 
 public class MessageDto {
     private Long id;
@@ -61,6 +62,18 @@ public class MessageDto {
 
     public void setSenderId(Long senderId) {
         this.senderId = senderId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MessageDto)) return false;
+        MessageDto that = (MessageDto) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(text, that.text) &&
+                Objects.equals(dateTime, that.dateTime) &&
+                Objects.equals(senderId, that.senderId) &&
+                Objects.equals(chatId, that.chatId);
     }
 
     @Override

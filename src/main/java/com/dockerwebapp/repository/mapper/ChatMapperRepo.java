@@ -14,12 +14,10 @@ public class ChatMapperRepo {
         if (resultSet.wasNull()) {
             return null;
         }
-
         Chat chat = new Chat.ChatBuilder()
                 .setId(id)
                 .setName(name)
                 .build();
-
 
         return chat;
     }

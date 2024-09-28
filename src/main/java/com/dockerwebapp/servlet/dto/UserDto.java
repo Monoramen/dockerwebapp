@@ -1,8 +1,5 @@
 package com.dockerwebapp.servlet.dto;
 
-import com.dockerwebapp.model.Chat;
-import com.dockerwebapp.model.User;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -13,7 +10,7 @@ public class UserDto {
     private String lastName;
     private String about;
     private String password;
-    private List<Chat> chats;
+    private List<ChatDto> chats;
 
 
     public Long getId() {
@@ -65,11 +62,11 @@ public class UserDto {
         this.password = password;
     }
 
-    public List<Chat> getChats() {
+    public List<ChatDto> getChats() {
         return chats;
     }
 
-    public void setChats(List<Chat> chats) {
+    public void setChats(List<ChatDto> chats) {
         this.chats = chats;
     }
 
@@ -93,7 +90,7 @@ public class UserDto {
     }
     @Override
     public String toString() {
-        return "UserDto{" +
+        return "{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +

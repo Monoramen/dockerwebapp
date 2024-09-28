@@ -69,12 +69,8 @@ class ChatServiceTest {
         Long chatId = 1L;
         Chat expectedChat = new Chat();
         expectedChat.setId(chatId);
-
         when(chatRepository.getChatById(chatId)).thenReturn(expectedChat); // Настраиваем мок
-
-        Chat actualChat = chatService.getChatById(chatId);
-
-        // Assert
+        ChatDto actualChat = chatService.getChatById(chatId);
         assertEquals(expectedChat.getId(), actualChat.getId()); // Проверяем, что полученный чат соответствует ожидаемому
     }
 

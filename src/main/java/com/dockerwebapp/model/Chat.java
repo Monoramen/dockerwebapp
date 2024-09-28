@@ -63,15 +63,10 @@ public class Chat {
         return messages; // Возвращаем список сообщений
     }
 
-    public void addMessage(Message message) {
-        if (message != null) {
-            messages.add(message); // Добавляем сообщение в список
-        }
-    }
-
     public void setMessages(List<Message> messages) {
         this.messages = messages; // Устанавливаем новый список сообщений
     }
+
 
     // Статический класс Builder
     public static class ChatBuilder {
@@ -87,16 +82,6 @@ public class Chat {
 
         public ChatBuilder setName(String name) {
             this.name = name;
-            return this;
-        }
-
-        public ChatBuilder setParticipantIds(List<Long> participantIds) {
-            this.participantIds = participantIds; // Устанавливаем идентификаторы участников
-            return this;
-        }
-
-        public ChatBuilder setMessages(List<Message> messages) {
-            this.messages = messages; // Устанавливаем сообщения
             return this;
         }
 
@@ -118,7 +103,7 @@ public class Chat {
         return "Chat{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", participantsId=" + participantIds.size()+
+                ", participantsId=" + getParticipantIds()+
                 ", messages=" + messages +
                 '}';
     }

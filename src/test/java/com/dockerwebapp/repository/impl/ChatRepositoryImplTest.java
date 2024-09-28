@@ -46,6 +46,17 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
     }
 
     @Test
+    void testUpdateChat() throws SQLException {
+        List<Chat> chats = chatRepository.getUserChats(1L);
+        Chat chat = chats.get(0);
+        chat.setId(1L);
+        chat.setName("Updated Chat Name");
+        chatRepository.updateChat(chat);
+        assertEquals("Updated Chat Name", chats.get(0).getName()); // Проверяем обновленное имя чата
+    }
+
+
+    @Test
     void testDeleteChat() throws SQLException {
         System.out.println(chatRepository.getUserChats(1L));
         Chat chat = new Chat();
@@ -72,15 +83,6 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
         assertEquals(0, chats.size()); // Проверяем количество чатов
     }
 
-    @Test
-    void testUpdateChat() throws SQLException {
-        List<Chat> chats = chatRepository.getUserChats(1L);
-        Chat chat = chats.get(0);
-        chat.setId(1L);
-        chat.setName("Updated Chat Name");
-        chatRepository.updateChat(chat);
-        assertEquals("Updated Chat Name", chats.get(0).getName()); // Проверяем обновленное имя чата
-    }
 
     @Test
     void testGetUserChatsAtLeastTwoparticipants() {

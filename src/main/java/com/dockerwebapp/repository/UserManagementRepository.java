@@ -3,7 +3,6 @@ package com.dockerwebapp.repository;
 import com.dockerwebapp.model.User;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public interface UserManagementRepository {
     void createUser(User user) throws SQLException;

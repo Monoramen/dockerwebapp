@@ -14,6 +14,7 @@ public class User {
     private String password;
     private List<Chat> chats = new ArrayList<>();
 
+
     // Конструктор по умолчанию
     public User() {}
 
@@ -28,10 +29,6 @@ public class User {
         this.chats = builder.chats;
     }
 
-    public User(Long id, String username) {
-        this.id = id;
-        this.username = username;
-    }
 
     public static class UserBuilder {
         private Long id;

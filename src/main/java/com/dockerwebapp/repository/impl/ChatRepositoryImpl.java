@@ -65,12 +65,12 @@ public class ChatRepositoryImpl implements ChatRepository {
         return queryExecutor.executeQuery(sql, new Object[]{userId}, resultSet -> {
             try {
                 if (resultSet.next()) {
-                    return resultSet.getInt(1) > 0; // Возвращаем true, если пользователь существует
+                    return resultSet.getInt(1) > 0;
                 }
             } catch (SQLException e) {
                 throw new IllegalArgumentException(e);
             }
-            return false; // Пользователь не найден
+            return false;
         });
     }
 
@@ -136,6 +136,7 @@ public class ChatRepositoryImpl implements ChatRepository {
         queryExecutor.executeUpdate(sql, new Object[]{chat.getName(), chat.getId()});
     }
 
+
     @Override
     public Chat getChatById(Long chatId) throws SQLException {
         String sql = "SELECT c.id AS chat_id, c.name AS chat_name, " +
@@ -150,13 +151,9 @@ public class ChatRepositoryImpl implements ChatRepository {
                     Long id = resultSet.getLong("chat_id");
                     String name = resultSet.getString("chat_name");
 
-                    // Создаем новый объект Chat
                     Chat chat = new Chat(id, name);
-
-                    // Список для хранения сообщений
                     List<Message> messages = new ArrayList<>();
 
-                    // Добавляем сообщения в список
                     do {
                         Long messageId = resultSet.getLong("message_id");
                         String messageText = resultSet.getString("message_text");
@@ -172,30 +169,15 @@ public class ChatRepositoryImpl implements ChatRepository {
 
                     // Устанавливаем сообщения в чат
                     chat.setMessages(messages);
-                    return chat; // Возвращаем объект Chat с сообщениями
+                    return chat;
                 }
             } catch (SQLException e) {
                 throw new IllegalArgumentException(e);
             }
-            return null; // Если чат не найден, возвращаем null
+            return null;
         });
     }
 
-    // Метод для получения пользователя по ID
-    private User getUserById(Long userId) throws SQLException {
-        String sql = "SELECT id, username FROM users WHERE id = ?";
-        return queryExecutor.executeQuery(sql, new Object[]{userId}, resultSet -> {
-            try {
-                if (resultSet.next()) {
-                    Long id = resultSet.getLong("id");
-                    String username = resultSet.getString("username");
-                    return new User(id, username); // Предполагается наличие конструктора User(Long id, String username)
-                }
-            } catch (SQLException e) {
-                throw new IllegalArgumentException(e);
-            }
-            return null; // Если пользователь не найден
-        });
-    }
+
 
 }
