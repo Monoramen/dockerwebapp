@@ -29,8 +29,7 @@ public class ChatRepositoryImpl implements ChatRepository {
                     chat.getId(),
                     chat.getName()});
         } catch (SQLException e) {
-            System.err.println("Error adding/updating chat: " + e.getMessage());
-            throw e;
+             throw new SQLException("Error adding chat");
         }
 
         // Затем добавляем участников
@@ -157,17 +156,15 @@ public class ChatRepositoryImpl implements ChatRepository {
                     do {
                         Long messageId = resultSet.getLong("message_id");
                         String messageText = resultSet.getString("message_text");
-                        Long senderId = resultSet.getLong("sender_id"); // Получаем ID отправителя
-                        LocalDateTime dateTime = resultSet.getTimestamp("dateTime").toLocalDateTime(); // Получаем ID отправителя
+                        Long senderId = resultSet.getLong("sender_id");
+                        LocalDateTime dateTime = resultSet.getTimestamp("dateTime").toLocalDateTime();
 
-                        if (messageId != null) { // Проверяем, есть ли сообщение
-                             // Получаем пользователя по ID отправителя
-                            Message message = new Message(messageId, messageText, dateTime , senderId, id); // Используем идентификатор чата
+                        if (messageId != null) {
+                            Message message = new Message(messageId, messageText, dateTime , senderId, id);
                             messages.add(message);
                         }
                     } while (resultSet.next());
 
-                    // Устанавливаем сообщения в чат
                     chat.setMessages(messages);
                     return chat;
                 }

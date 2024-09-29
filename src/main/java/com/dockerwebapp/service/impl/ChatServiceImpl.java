@@ -45,7 +45,7 @@ public class ChatServiceImpl implements ChatService {
         try {
             chatRepository.updateChat(chat);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException("Error updating chat");
         }
 
     }
@@ -56,11 +56,9 @@ public class ChatServiceImpl implements ChatService {
         try {
             chatRepository.deleteChat(chatId);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException("Error deleting chat");
         }
     }
-
-
 
 
     @Override
@@ -69,14 +67,19 @@ public class ChatServiceImpl implements ChatService {
         try {
             chat = chatRepository.getChatById(chatId);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException("Error fetching chat by id");
         }
         return  ChatsMapper.INSTANCE.convert(chat);
     }
 
     @Override
     public List<ChatDto> getUserChats(Long userId) throws SQLException {
-        List<Chat> chats = chatRepository.getUserChats(userId);
+        List<Chat> chats;
+        try {
+            chats = chatRepository.getUserChats(userId);
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Error fetching user chats");
+        }
         return chats.stream()
                 .map(chat -> ChatsMapper.INSTANCE.convert(chat)) // Используем маппер для каждого объекта Chat
                 .collect(Collectors.toList());

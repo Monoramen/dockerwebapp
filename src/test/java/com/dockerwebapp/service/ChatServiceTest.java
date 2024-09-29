@@ -29,38 +29,23 @@ class ChatServiceTest {
 
     @Test
     void testAddChat() throws SQLException {
-        // Arrange
         ChatDto chatDto = new ChatDto(1L, "chat1", Arrays.asList(1L, 2L));
-
-        // Act
         chatService.addChat(chatDto);
-
-        // Assert
-        verify(chatRepository).addChat(any(Chat.class)); // Проверяем, что метод addChat был вызван
+        verify(chatRepository).addChat(any(Chat.class));
     }
 
     @Test
     void testDeleteChat() throws SQLException {
-        // Arrange
         Long chatId = 1L;
-
-        // Act
         chatService.deleteChat(chatId);
-
-        // Assert
-        verify(chatRepository).deleteChat(chatId); // Проверяем, что метод deleteChat был вызван с правильным ID
+        verify(chatRepository).deleteChat(chatId);
     }
 
     @Test
     void testUpdateChat() throws SQLException {
-        // Arrange
         ChatDto chatDto = new ChatDto(1L, "updatedChat", Arrays.asList(1L, 2L));
-
-        // Act
         chatService.updateChat(chatDto);
-
-        // Assert
-        verify(chatRepository).updateChat(any(Chat.class)); // Проверяем, что метод updateChat был вызван
+        verify(chatRepository).updateChat(any(Chat.class));
     }
 
     @Test
@@ -69,24 +54,61 @@ class ChatServiceTest {
         Long chatId = 1L;
         Chat expectedChat = new Chat();
         expectedChat.setId(chatId);
-        when(chatRepository.getChatById(chatId)).thenReturn(expectedChat); // Настраиваем мок
+        when(chatRepository.getChatById(chatId)).thenReturn(expectedChat);
         ChatDto actualChat = chatService.getChatById(chatId);
-        assertEquals(expectedChat.getId(), actualChat.getId()); // Проверяем, что полученный чат соответствует ожидаемому
+        assertEquals(expectedChat.getId(), actualChat.getId());
     }
 
     @Test
     void testGetUserChats() throws SQLException {
-        // Arrange
         Long userId = 1L;
         List<Chat> chats = Arrays.asList(new Chat(), new Chat());
-
-        when(chatRepository.getUserChats(userId)).thenReturn(chats); // Настраиваем мок
-
-        // Act
+        when(chatRepository.getUserChats(userId)).thenReturn(chats);
         List<ChatDto> result = chatService.getUserChats(userId);
+        assertEquals(chats.size(), result.size());
+        verify(chatRepository).getUserChats(userId);
+    }
 
-        // Assert
-        assertEquals(chats.size(), result.size()); // Проверяем количество чатов
-        verify(chatRepository).getUserChats(userId); // Проверяем вызов метода getUserChats с правильным ID пользователя
+    @Test
+    void testAddChatThrowException() throws SQLException {
+        ChatDto chatDto = new ChatDto(1L, "chat1", Arrays.asList(1L, 2L));
+        doThrow(new SQLException("Error adding chat")).when(chatRepository).addChat(any(Chat.class));
+
+        assertThrows(SQLException.class, () -> chatService.addChat(chatDto));
+        verify(chatRepository).addChat(any(Chat.class));
+    }
+
+
+    @Test
+    void testDeleteChatThrowException() throws SQLException {
+        Long chatId = 1L;
+        doThrow(new SQLException("Error deleting chat")).when(chatRepository).deleteChat(chatId);
+        assertThrows(IllegalArgumentException.class, () -> chatService.deleteChat(chatId));
+        verify(chatRepository).deleteChat(chatId);
+    }
+
+    @Test
+    void testUpdateChatThrowException() throws SQLException {
+        ChatDto chatDto = new ChatDto(1L, "updatedChat", Arrays.asList(1L, 2L));
+        doThrow(new SQLException("Error updating chat")).when(chatRepository).updateChat(any(Chat.class));
+        assertThrows(IllegalArgumentException.class, () -> chatService.updateChat(chatDto));
+        verify(chatRepository).updateChat(any(Chat.class));
+    }
+
+
+    @Test
+    void testGetChatByIdThrowException() throws SQLException {
+        Long chatId = 1L;
+        doThrow(new SQLException("Error fetching chat by id")).when(chatRepository).getChatById(chatId);
+        assertThrows(IllegalArgumentException.class, () -> chatService.getChatById(chatId));
+        verify(chatRepository).getChatById(chatId);
+    }
+
+    @Test
+    void testGetUserChatsThrowException() throws SQLException {
+        Long userId = 1L;
+        doThrow(new SQLException("Error fetching user chats")).when(chatRepository).getUserChats(userId);
+        assertThrows(IllegalArgumentException.class, () -> chatService.getUserChats(userId));
+        verify(chatRepository).getUserChats(userId);
     }
 }
