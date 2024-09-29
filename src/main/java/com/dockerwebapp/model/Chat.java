@@ -52,19 +52,18 @@ public class Chat {
     }
 
     public List<Long> getParticipantIds() {
-        return participantIds; // Возвращаем список идентификаторов участников
-    }
+        return participantIds;}
 
     public void setParticipantIds(List<Long> participantIds) {
-        this.participantIds = participantIds; // Устанавливаем новый список идентификаторов участников
+        this.participantIds = participantIds;
     }
 
     public List<Message> getMessages() {
-        return messages; // Возвращаем список сообщений
+        return messages;
     }
 
     public void setMessages(List<Message> messages) {
-        this.messages = messages; // Устанавливаем новый список сообщений
+        this.messages = messages;
     }
 
 
@@ -93,9 +92,6 @@ public class Chat {
             return messages;
         }
 
-        public List<Long> getParticipantIds() {
-            return participantIds;
-        }
     }
 
     @Override

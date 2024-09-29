@@ -51,7 +51,7 @@ public class UserServlet extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
             }
         } catch (SQLException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to get user: " + e.getMessage());
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to get user");
         }
     }
 
@@ -67,9 +67,8 @@ public class UserServlet extends HttpServlet {
             CreateUserDto CreateUserDto = objectMapper.readValue(req.getInputStream(), CreateUserDto.class);
             userService.createUser(CreateUserDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create user: " + e.getMessage());
+        } catch (IOException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create user");
         }
     }
 
@@ -90,7 +89,7 @@ public class UserServlet extends HttpServlet {
             userService.updateUser(userDto);
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (SQLException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to update user: " + e.getMessage());
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to update user");
         }
     }
 

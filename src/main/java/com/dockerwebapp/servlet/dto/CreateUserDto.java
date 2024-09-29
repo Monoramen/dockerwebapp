@@ -34,6 +34,7 @@ public class CreateUserDto {
     public int hashCode() {
         return Objects.hash(username, password);
     }
+
     @Override
     public String toString() {
         return "CreateUserDto{" +

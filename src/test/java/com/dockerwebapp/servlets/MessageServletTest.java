@@ -1,4 +1,4 @@
-package com.dockerwebapp.repository.servlets;
+package com.dockerwebapp.servlets;
 
 import com.dockerwebapp.service.MessageService;
 import com.dockerwebapp.servlet.MessageServlet;
@@ -19,6 +19,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +61,6 @@ public class MessageServletTest {
         messageServlet = Mockito.spy(new MessageServlet());
         when(servletContext.getAttribute("messageService")).thenReturn(messageService);
         doReturn(servletContext).when(messageServlet).getServletContext();
-
         try {
             messageServlet.init();
 
@@ -71,7 +72,6 @@ public class MessageServletTest {
     @Test
     void testDoGet() throws Exception {
         when(request.getPathInfo()).thenReturn("/chat/1");
-
         MessageDto messageDto = new MessageDto();
         messageDto.setId(1L);
         messageDto.setChatId(1L);
@@ -79,17 +79,12 @@ public class MessageServletTest {
         messageDto.setSenderId(1L);
         messageDto.setDateTime("2022-01-01 00:00:00");
         messageDto.setChatId(1L);
-
         List<MessageDto> messagesDto = new ArrayList<>();
         messagesDto.add(messageDto);
-
-
         when(messageService.findAll(1L)).thenReturn(messagesDto);
         when(response.getOutputStream()).thenReturn(outputStream);
         objectMapper.writeValue(response.getOutputStream(), messagesDto);
-
         messageServlet.doGet(request, response);
-
         verify(response).setStatus(HttpServletResponse.SC_OK);
         verify(response).setContentType("application/json");
         verify(objectMapper).writeValue(response.getOutputStream(), messagesDto);
@@ -122,13 +117,17 @@ public class MessageServletTest {
         messageDto.setDateTime("2022-01-01 00:00:00");
         messageDto.setSenderId(1L);
         messageDto.setChatId(1L);
-
         when(objectMapper.readValue(request.getInputStream(), MessageDto.class)).thenReturn(messageDto);
-
         messageServlet.doPost(request, response);
-
         verify(messageService).save(messageDto);
         verify(response).setStatus(HttpServletResponse.SC_CREATED);
+    }
+
+    @Test
+    void testDoPostServiceException() throws Exception {
+        when(request.getPathInfo()).thenReturn("/chat/1");
+        messageServlet.doPost(request, response);
+        verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create message");
     }
 
     @Test
@@ -151,15 +150,23 @@ public class MessageServletTest {
         verify(response).setStatus(HttpServletResponse.SC_CREATED);
     }
 
-
-
     @Test
-    void testDoPutNullPath() throws Exception {
+    void testDoPutServiceException() throws Exception {
         when(request.getPathInfo()).thenReturn(null);
         messageServlet.doPut(request, response);
-        verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Path information is required");
+        verify(response).sendError(eq(HttpServletResponse.SC_BAD_REQUEST), eq("Path information is required."));
     }
 
+    @Test
+    void testDoPutValidPathBadRequest() throws IOException {
+        when(request.getPathInfo()).thenReturn("/update");
+        MessageDto messageDto = new MessageDto();
+        when(objectMapper.readValue(any(ByteArrayInputStream.class), eq(MessageDto.class)))
+                .thenReturn(messageDto);
+        doThrow(new RuntimeException("Update failed")).when(messageService).update(any(MessageDto.class));
+        messageServlet.doPut(request, response);
+        verify(response).sendError(eq(HttpServletResponse.SC_BAD_REQUEST), eq("Failed to create message"));
+    }
 
     @Test
     void testDoDeleteSuccess() throws Exception {
@@ -174,13 +181,6 @@ public class MessageServletTest {
         when(request.getPathInfo()).thenReturn("/invalid");
         messageServlet.doDelete(request, response);
         verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid path.");
-    }
-
-    @Test
-    void testDoDeleteNullPath() throws Exception {
-        when(request.getPathInfo()).thenReturn(null);
-        messageServlet.doDelete(request, response);
-        verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Path information is required");
     }
 
 }

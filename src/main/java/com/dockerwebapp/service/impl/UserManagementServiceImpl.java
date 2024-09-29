@@ -44,7 +44,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         try {
             userRepository.updateUser(user);
         } catch (SQLException e) {
-          throw new IllegalArgumentException("Database error while updating user: " + e.getMessage(), e);
+          throw new IllegalArgumentException("Database error while updating user");
         }
 
     }

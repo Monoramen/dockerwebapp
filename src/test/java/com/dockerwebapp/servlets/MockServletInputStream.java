@@ -1,4 +1,4 @@
-package com.dockerwebapp.repository.servlets;
+package com.dockerwebapp.servlets;
 
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;

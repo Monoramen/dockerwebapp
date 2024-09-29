@@ -46,6 +46,7 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
                         user.getAbout(),
                         user.getPassword(),
                         user.getId()});
+
     }
 
     @Override

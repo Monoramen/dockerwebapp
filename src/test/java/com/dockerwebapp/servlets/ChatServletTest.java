@@ -1,4 +1,4 @@
-package com.dockerwebapp.repository.servlets;
+package com.dockerwebapp.servlets;
 
 import com.dockerwebapp.service.ChatService;
 import com.dockerwebapp.servlet.ChatServlet;
@@ -15,6 +15,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -173,6 +175,21 @@ public class ChatServletTest {
         verify(response).setStatus(HttpServletResponse.SC_ACCEPTED);  // Проверка правильного статуса
     }
 
+    @Test
+    void testDoPutBadRequest() throws IOException {
+        when(request.getPathInfo()).thenReturn("/chats/updateChat");
+        ChatDto chatDto = new ChatDto();
+        chatDto.setId(1L);
+        when(objectMapper.readValue(any(ByteArrayInputStream.class), eq(ChatDto.class)))
+                .thenReturn(chatDto);
+        try {
+            doThrow(new RuntimeException("Update failed")).when(chatService).updateChat(any(ChatDto.class));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        chatServlet.doPut(request, response);
+        verify(response).sendError(eq(HttpServletResponse.SC_BAD_REQUEST), eq("Failed to create chat"));
+    }
 
     @Test
     void testDoDeleteSuccess() throws Exception {
@@ -191,8 +208,5 @@ public class ChatServletTest {
         verify(chatService).deleteChat(6L);
         verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to delete chat");
     }
-
-
-
 
 }

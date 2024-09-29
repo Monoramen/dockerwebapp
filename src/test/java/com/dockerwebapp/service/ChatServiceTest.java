@@ -1,4 +1,4 @@
-package com.dockerwebapp.repository.service;
+package com.dockerwebapp.service;
 
 import com.dockerwebapp.model.Chat;
 import com.dockerwebapp.repository.ChatRepository;

@@ -4,7 +4,6 @@ package com.dockerwebapp.repository.impl;
 
 
 import com.dockerwebapp.model.Chat;
-import com.dockerwebapp.model.User;
 import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import java.sql.SQLException;

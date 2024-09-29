@@ -1,4 +1,4 @@
-package com.dockerwebapp.repository.servlets;
+package com.dockerwebapp.servlets;
 
 import com.dockerwebapp.model.User;
 import com.dockerwebapp.service.UserManagementService;
@@ -17,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 
@@ -81,6 +80,8 @@ class UserServletTest {
         userServlet.doGet(request, response);
         verify(response).sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
     }
+
+
     @Test
     void testDoGet() throws Exception {
         // Мокируем PathInfo для запроса
@@ -134,6 +135,8 @@ class UserServletTest {
         verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Request body is empty");
     }
 
+
+
     @Test
     void testDoPostSuccess() throws Exception {
         String json = "{\"username\":\"newuser\", \"password\":\"password\"}";
@@ -160,6 +163,18 @@ class UserServletTest {
         when(request.getPathInfo()).thenReturn(null);
         userServlet.doPut(request, response);
         verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "User ID is required");
+    }
+
+    @Test
+    void testDoPutSQLException() throws Exception {
+        when(request.getPathInfo()).thenReturn("/1");
+        String json = "{\"username\":\"John Doe\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"about\":\"About John Doe\",\"password\":\"password123\"}";
+        byte[] jsonBytes = json.getBytes(StandardCharsets.UTF_8);
+        when(request.getInputStream()).thenReturn(new MockServletInputStream(jsonBytes));
+        doThrow(new SQLException("Database error while updating user")).when(userService).updateUser(any(UserDto.class));
+        userServlet.doPut(request, response);
+        verify(userService).updateUser(any(UserDto.class)); // Verify that updateUser was called
+        verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to update user");
     }
 
     @Test
@@ -217,6 +232,36 @@ class UserServletTest {
         verify(userService).deleteUser("john_doe");
         verify(response).sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to delete user: Database error");
     }
+
+
+
+    @Test
+    void testDoGetUserIdIsRequired() throws Exception {
+        when(request.getPathInfo()).thenReturn(null);  // Симуляция отсутствующего ID
+
+        userServlet.doGet(request, response);
+
+        verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "User ID is required");
+    }
+
+    @Test
+    void testDoGetUserNotFound() throws Exception {
+        when(request.getPathInfo()).thenReturn("/1");
+        when(userService.getById(1L)).thenReturn(null);  // Симуляция отсутствующего пользователя
+
+        userServlet.doGet(request, response);
+
+        verify(response).sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
+    }
+
+    @Test
+    void testDoGetSQLException() throws Exception {
+        when(request.getPathInfo()).thenReturn("/1");
+        when(userService.getById(1L)).thenThrow(new SQLException("Database error"));  // Симуляция SQLException
+        userServlet.doGet(request, response);
+        verify(response).sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to get user");
+    }
+
 
 
 

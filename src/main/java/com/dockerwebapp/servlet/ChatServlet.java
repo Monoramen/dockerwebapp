@@ -94,7 +94,7 @@ public class ChatServlet extends HttpServlet {
             if (pathParts[2].equals("updateChat")) {
                 try {
                     ChatDto chatDto = objectMapper.readValue(request.getInputStream(), ChatDto.class);
-                    chatService.addChat(chatDto);
+                    //chatService.addChat(chatDto);
                     Long chatId = chatDto.getId();
                     chatDto.setId(chatId);
                     chatService.updateChat(chatDto);

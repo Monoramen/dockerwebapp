@@ -66,7 +66,7 @@ public class MessageServlet extends HttpServlet {
         if (pathInfo != null) {
             String[] pathParts = pathInfo.split("/");
 
-            if (pathParts.length == 3 && pathParts[1].equals("chat")) { // Проверяем длину массива
+            if (pathParts.length == 3 && pathParts[1].equals("chat")) {
                 try {
                     Long chatId = Long.valueOf(pathParts[2]);
                     MessageDto messageDto = objectMapper.readValue(request.getInputStream(), MessageDto.class);
@@ -74,12 +74,10 @@ public class MessageServlet extends HttpServlet {
                     messageService.save(messageDto); // Сохраняем сообщение
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
-                    response.setStatus(HttpServletResponse.SC_CREATED); // Успешное создание сообщения
+                    response.setStatus(HttpServletResponse.SC_CREATED);
                 } catch (Exception e) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create message");
                 }
-            } else {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid path.");
             }
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Path information is required.");
@@ -91,49 +89,55 @@ public class MessageServlet extends HttpServlet {
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo();
 
+        // Устанавливаем тип контента и кодировку в начале
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
         if (pathInfo != null) {
             String[] pathParts = pathInfo.split("/");
 
-            if (pathParts[1].equals("update")) { // Проверяем длину массива
+            if (pathParts[1].equals("update")) {
                 try {
                     MessageDto messageDto = objectMapper.readValue(request.getInputStream(), MessageDto.class);
                     messageService.update(messageDto);
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
                     response.setStatus(HttpServletResponse.SC_CREATED);
                 } catch (Exception e) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create message" );
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create message");
                 }
             }
         } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Path information is required");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Path information is required.");
         }
     }
+
 
     @Override
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo();
 
+        // Устанавливаем тип контента и кодировку в начале
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
         if (pathInfo != null) {
             String[] pathParts = pathInfo.split("/");
 
-            if (pathParts[1].equals("delete")) { // Проверяем длину массива
+            if (pathParts[1].equals("delete")) {
                 try {
                     Long messageId = Long.valueOf(pathParts[2]);
-                    messageService.delete(messageId); // Сохраняем сообщение
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
+                    messageService.delete(messageId);
                     response.setStatus(HttpServletResponse.SC_ACCEPTED);
                 } catch (Exception e) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create message");
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to delete message");
                 }
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid path.");
             }
         } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Path information is required");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Path information is required.");
         }
     }
+
 
 
     }
