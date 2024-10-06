@@ -3,11 +3,15 @@ package com.dockerwebapp.servlets;
 import com.dockerwebapp.service.ChatService;
 import com.dockerwebapp.servlet.ChatServlet;
 import com.dockerwebapp.servlet.dto.ChatDto;
+import com.dockerwebapp.servlet.dto.ChatDtoParticipant;
+import com.dockerwebapp.servlet.dto.UserDto;
+import com.dockerwebapp.servlet.dto.UserInfoDto;
 import com.dockerwebapp.servlet.mapper.UserManagementMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,6 +29,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 public class ChatServletTest {
+    private List<UserInfoDto> participants;
     @InjectMocks
     private ChatServlet chatServlet;
 
@@ -55,6 +60,11 @@ public class ChatServletTest {
         MockitoAnnotations.openMocks(this);
         chatServlet = new ChatServlet();
         chatServlet = Mockito.spy(new ChatServlet());
+        participants = new ArrayList<>();
+        UserInfoDto userDto = new UserInfoDto();
+        userDto.setUsername("name");
+        userDto.setId(1L);
+        participants.add(userDto);
         when(servletContext.getAttribute("chatService")).thenReturn(chatService);
         doReturn(servletContext).when(chatServlet).getServletContext();
 
@@ -86,7 +96,8 @@ public class ChatServletTest {
         ChatDto chatDto = new ChatDto();
         chatDto.setId(1L);
         chatDto.setName("My Chat");
-        chatDto.setParticipantIds(List.of(1L, 2L, 3L));
+
+        chatDto.setParticipantIds(participants);
         chats.add(chatDto);
         when(chatService.getUserChats(userId)).thenReturn(chats);
         when(response.getOutputStream()).thenReturn(outputStream);
@@ -109,7 +120,7 @@ public class ChatServletTest {
         ChatDto chatDto = new ChatDto();
         chatDto.setId(chatId);
         chatDto.setName("Chat Name");
-        chatDto.setParticipantIds(List.of(1L, 2L, 3L));
+        chatDto.setParticipantIds(participants);
         when(chatService.getChatById(chatId)).thenReturn(chatDto);
 
         when(response.getOutputStream()).thenReturn(outputStream);
@@ -127,19 +138,20 @@ public class ChatServletTest {
     void testDoPostSuccess() throws Exception {
         when(request.getPathInfo()).thenReturn("/2/addchat");
 
-        String json = "{\"id\": 1, \"name\":\"chatName\", \"participantIds\":[1,2,3]}";
+        String json = "{\"id\": 1, \"name\":\"chatName\", \"participantIds\":[1,2]}";
         byte[] jsonBytes = json.getBytes(StandardCharsets.UTF_8);
 
         ServletInputStream inputStream = new MockServletInputStream(jsonBytes);
         when(request.getInputStream()).thenReturn(inputStream);
         when(request.getContentLength()).thenReturn(jsonBytes.length);
 
-        ChatDto chatDto = new ChatDto();
+        ChatDtoParticipant chatDto = new ChatDtoParticipant();
         chatDto.setId(1L);
         chatDto.setName("chatName");
-        chatDto.setParticipantIds(List.of(1L, 2L, 3L));
 
-        when(objectMapper.readValue(request.getInputStream(), ChatDto.class)).thenReturn(chatDto);
+        chatDto.setParticipantIds(List.of(1L,2L));
+
+        when(objectMapper.readValue(request.getInputStream(), ChatDtoParticipant.class)).thenReturn(chatDto);
 
         chatServlet.doPost(request, response);
 

@@ -4,9 +4,14 @@ package com.dockerwebapp.repository.impl;
 
 
 import com.dockerwebapp.model.Chat;
+import com.dockerwebapp.model.User;
+import org.junit.Ignore;
 import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.security.PrivateKey;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -15,18 +20,29 @@ import static org.junit.jupiter.api.Assertions.*;
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ChatRepositoryImplTest  extends AbstractDatabaseTest {
-
+    private List<User> participants = new ArrayList<>();
     private ChatRepositoryImpl chatRepository;
 
     @BeforeEach
     void init() throws SQLException {
         initializeDatabaseConnection();
         chatRepository = new ChatRepositoryImpl();
+        UserManagementRepositoryImpl userRepository = new UserManagementRepositoryImpl();
+        User user1 = new User.UserBuilder(1L, "username", "password").build();
+        User user2 = new User.UserBuilder(2L, "username2", "password").build();
+        userRepository.createUser(user1);
+        userRepository.createUser(user2);
+
+        participants.add(user1);
+        participants.add(user2);
     }
 
     private Chat createChat(Long id, String name) {
         return new Chat(id, name);
     }
+
+
+
 
     @Test
     void testAddChat() throws SQLException {
@@ -34,14 +50,18 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
         Chat chat = new Chat();
         chat.setId(3L);
         chat.setName("My Chat");
-        chat.addParticipant(1L);
-        chat.addParticipant(2L);
-        chatRepository.addChat(chat);
-        List<Chat> chats = chatRepository.getUserChats(2L);
+        chat.setParticipantIds(participants);
+        // Act
+        chatRepository.addChat(chat); // Добавляем чат
+
+        // Assert
+        List<Chat> chats = chatRepository.getUserChats(participants.get(0).getId()); // Получаем чаты для первого участника
         assertNotNull(chats);
         assertFalse(chats.isEmpty());
         assertEquals("My Chat", chats.get(chats.size() - 1).getName()); // Проверяем имя последнего добавленного чата
-        chatRepository.deleteChat(3L);
+
+        // Clean up
+        chatRepository.deleteChat(chat.getId()); // Удаляем чат после теста
     }
 
     @Test

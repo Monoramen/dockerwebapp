@@ -77,6 +77,11 @@ public class MessageDto {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, text, dateTime,senderId, chatId);
+    }
+
+    @Override
     public String toString() {
         return "MessageDto{" +
                 "id=" + id +

@@ -3,6 +3,7 @@ package com.dockerwebapp.servlet;
 import com.dockerwebapp.service.ChatService;
 
 import com.dockerwebapp.servlet.dto.ChatDto;
+import com.dockerwebapp.servlet.dto.ChatDtoParticipant;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletException;
@@ -10,7 +11,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -22,7 +24,8 @@ import java.util.List;
 public class ChatServlet extends HttpServlet {
 
     private transient ChatService chatService;
-    private transient ObjectMapper objectMapper;  // Для работы с JSON
+    private transient ObjectMapper objectMapper;
+    private static final Logger logger = LoggerFactory.getLogger(ChatServlet.class);
 
     @Override
     public void init() throws ServletException {
@@ -43,12 +46,12 @@ public class ChatServlet extends HttpServlet {
                     List<ChatDto> chats;
                     try {
                         chats = chatService.getUserChats(userId);
-                    } catch (SQLException e) {
-                        throw new IllegalArgumentException(e);
-                    }
                         response.setContentType("application/json");
                         response.setStatus(HttpServletResponse.SC_OK);
                         objectMapper.writeValue(response.getOutputStream(), chats);
+                    } catch (SQLException e) {
+                        throw new IllegalArgumentException(e);
+                    }
                 }
             if (pathParts.length == 4 && pathParts[2].equals("chat")) {
                 Long chatId = Long.valueOf(pathParts[3]);
@@ -73,9 +76,10 @@ public class ChatServlet extends HttpServlet {
 
             if (pathParts[2].equals("addchat")) {
                 try {
-                    ChatDto chatDto = objectMapper.readValue(request.getInputStream(), ChatDto.class);
-                    chatService.addChat(chatDto); // Предполагается, что метод существует
-                    response.setStatus(HttpServletResponse.SC_CREATED);
+                        ChatDtoParticipant chatDto = objectMapper.readValue(request.getInputStream(), ChatDtoParticipant.class);
+                        logger.debug("Converted ChatDtoParticipant: {}", chatDto);
+                        chatService.addChat(chatDto);
+                        response.setStatus(HttpServletResponse.SC_CREATED);
                 } catch (Exception e) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create chat");
                 }
@@ -94,7 +98,6 @@ public class ChatServlet extends HttpServlet {
             if (pathParts[2].equals("updateChat")) {
                 try {
                     ChatDto chatDto = objectMapper.readValue(request.getInputStream(), ChatDto.class);
-                    //chatService.addChat(chatDto);
                     Long chatId = chatDto.getId();
                     chatDto.setId(chatId);
                     chatService.updateChat(chatDto);

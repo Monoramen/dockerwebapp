@@ -12,6 +12,7 @@ public class Message {
     private String text;
     private LocalDateTime dateTime;
     private Long senderId; // отправитель сообщения
+    private Long chatId;
 
     public Long getChatId() {
         return chatId;
@@ -21,7 +22,6 @@ public class Message {
         this.chatId = chatId;
     }
 
-    private Long chatId; // чат, в котором было отправлено сообщение
 
     public Message(Long id, String text,LocalDateTime dateTime, Long senderId, Long chatId) {
         this.id = id;
@@ -80,6 +80,12 @@ public class Message {
                 Objects.equals(senderId, message.senderId)  &&
                 Objects.equals(chatId, message.chatId);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, text, dateTime,senderId, chatId);
+    }
+
 
     @Override
     public String toString() {

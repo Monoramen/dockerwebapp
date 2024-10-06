@@ -87,7 +87,7 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
                     return UserManagementMapper.mapResultSetToUserManagement(resultSet);
                 }
             } catch (SQLException e) {
-                new IllegalArgumentException(e);
+                new SQLException("Cannot find in the DataBase");
             }
             return null;
         });
@@ -103,11 +103,10 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
         return queryExecutor.executeQuery(sql, new Object[]{id}, resultSet -> {
             try {
                 if (resultSet.next()) {
-                    System.out.println("Found user: " +UserManagementMapper.mapResultSetToUser(resultSet));
                     return UserManagementMapper.mapResultSetToUser(resultSet);
                 }
             } catch (SQLException e) {
-                new IllegalArgumentException(e);
+                new SQLException("Cannot find user");
             }
             return null;
         });

@@ -1,5 +1,6 @@
 package com.dockerwebapp.servlet.dto;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -7,21 +8,31 @@ import java.util.Objects;
 public class ChatDto {
     private Long id;
     private String name;
-    private List<Long> participantIds; // Список идентификаторов участников
+    private List<UserInfoDto> participantIds;
+    private List<MessageDto> messages;
 
-    public ChatDto(Long id, String name, List<Long> participantIds) {
+
+    public ChatDto(Long id, String name, List<UserInfoDto> participantIds) {
         this.id = id;
-        this.name = name != null ? name : ""; // Устанавливаем значение по умолчанию
-        this.participantIds = participantIds; // Инициализируем идентификаторы участников
-    }
+        this.name = name != null ? name : "";
+        this.participantIds = participantIds;
 
+    }
     public ChatDto() {
-        // Инициализация значений по умолчанию
         this.participantIds = new ArrayList<>();
+        this.messages = new ArrayList<>();
+    }
+    public void setId(Long chatId) {
+        this.id = chatId;
+    }
+    public Long getId() { return id;}
+
+    public List<MessageDto> getMessages() {
+        return messages;
     }
 
-    public Long getId() {
-        return id;
+    public void setMessages(List<MessageDto> messages) {
+        this.messages = messages;
     }
 
     public String getName() {
@@ -29,22 +40,19 @@ public class ChatDto {
     }
 
     public void setName(String name) {
-        this.name = name; // Добавляем setter для имени
+        this.name = name;
     }
 
 
-    public List<Long> getParticipantIds() {
+    public List<UserInfoDto> getParticipantIds() {
         return participantIds; // Геттер для идентификаторов участников
     }
 
-    public void setParticipantIds(List<Long> participantIds) {
+    public void setParticipantIds(List<UserInfoDto> participantIds) {
         this.participantIds = participantIds; // Сеттер для идентификаторов участников
     }
 
-    @Override
-    public String toString() {
-        return "ChatDto{id=" + id + ", name='" + name + '\'' + ", participantIds=" + participantIds + '}';
-    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -61,7 +69,11 @@ public class ChatDto {
         return Objects.hash(id, name, participantIds);
     }
 
-    public void setId(Long chatId) {
-        this.id = chatId;
+    @Override
+    public String toString() {
+        return "ChatDto{id=" + id +
+                ", name='" + name +
+                "', participantIds=" + participantIds + '}';
     }
+
 }

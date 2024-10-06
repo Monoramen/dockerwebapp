@@ -25,6 +25,12 @@ public class MessageServlet extends HttpServlet {
 
     private transient MessageService messageService;
     private transient ObjectMapper objectMapper;
+    private final String errMsg = "Path information is required.";
+
+    private void setResponseHeaders(HttpServletResponse response) {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+    }
 
     @Override
     public void init() throws ServletException {
@@ -42,14 +48,11 @@ public class MessageServlet extends HttpServlet {
 
                 if (pathParts[1].equals("chat")) {
                     try {
+                        setResponseHeaders(response);
                         Long chatId = Long.valueOf(pathParts[2]);
                         List<MessageDto> messages = messageService.findAll(chatId);
-
-
-                        objectMapper.writeValue(response.getOutputStream(), messages);
-                        response.setCharacterEncoding("UTF-8");
-                        response.setContentType("application/json");
                         response.setStatus(HttpServletResponse.SC_OK);
+                        objectMapper.writeValue(response.getOutputStream(), messages);
 
                     } catch (Exception e) {
                         response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to get messages");
@@ -61,7 +64,7 @@ public class MessageServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo();
-
+        setResponseHeaders(response);
 
         if (pathInfo != null) {
             String[] pathParts = pathInfo.split("/");
@@ -72,15 +75,14 @@ public class MessageServlet extends HttpServlet {
                     MessageDto messageDto = objectMapper.readValue(request.getInputStream(), MessageDto.class);
                     messageDto.setChatId(chatId);
                     messageService.save(messageDto); // Сохраняем сообщение
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
+
                     response.setStatus(HttpServletResponse.SC_CREATED);
                 } catch (Exception e) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create message");
                 }
             }
         } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Path information is required.");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, errMsg);
         }
     }
 
@@ -89,9 +91,7 @@ public class MessageServlet extends HttpServlet {
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo();
 
-        // Устанавливаем тип контента и кодировку в начале
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        setResponseHeaders(response);
 
         if (pathInfo != null) {
             String[] pathParts = pathInfo.split("/");
@@ -106,7 +106,7 @@ public class MessageServlet extends HttpServlet {
                 }
             }
         } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Path information is required.");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, errMsg);
         }
     }
 
@@ -114,10 +114,7 @@ public class MessageServlet extends HttpServlet {
     @Override
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo();
-
-        // Устанавливаем тип контента и кодировку в начале
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        setResponseHeaders(response);
 
         if (pathInfo != null) {
             String[] pathParts = pathInfo.split("/");
@@ -134,7 +131,7 @@ public class MessageServlet extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid path.");
             }
         } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Path information is required.");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, errMsg);
         }
     }
 

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ChatRepositoryImpl implements ChatRepository {
     private final QueryExecutor queryExecutor;
 
@@ -21,7 +22,6 @@ public class ChatRepositoryImpl implements ChatRepository {
 
     @Override
     public void addChat(Chat chat) throws SQLException {
-        // Сначала добавляем чат
         String sql = "INSERT INTO chats (id, name) VALUES (?, ?) ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name";
 
         try {
@@ -29,33 +29,31 @@ public class ChatRepositoryImpl implements ChatRepository {
                     chat.getId(),
                     chat.getName()});
         } catch (SQLException e) {
-             throw new SQLException("Error adding chat");
+            throw new SQLException("Error adding chat", e);
         }
 
         // Затем добавляем участников
         if (chat.getParticipantIds() != null && chat.getParticipantIds().size() >= 2) {
             String participantSql = "INSERT INTO chat_participants (chat_id, user_id) VALUES (?, ?)";
 
-            for (Long participantId : chat.getParticipantIds()) {
-                // Проверка существования пользователя перед добавлением
-                if (!isUserExists(participantId)) {
-                    throw new SQLException("User with ID " + participantId + " does not exist.");
+            for (User participant : chat.getParticipantIds()) {
+                if (!isUserExists(participant.getId())) {
+                    throw new SQLException("User with ID " + participant.getId() + " does not exist.");
                 }
-
                 try {
                     queryExecutor.executeUpdate(participantSql, new Object[]{
                             chat.getId(),
-                            participantId // Используем идентификатор участника
+                            participant.getId()
                     });
                 } catch (SQLException e) {
-                    System.err.println("Error adding participant: " + e.getMessage());
-                    throw e;
+                    throw new SQLException("Error adding participant");
                 }
             }
         } else {
             throw new SQLException("A chat must have at least two participants.");
         }
     }
+
 
     private boolean isUserExists(Long userId) throws SQLException {
         String sql = "SELECT COUNT(*) FROM users WHERE id = ?";
@@ -105,18 +103,18 @@ public class ChatRepositoryImpl implements ChatRepository {
 
     @Override
     public List<Chat> getUserChats(Long userId) throws SQLException {
-        String sql = "SELECT c.id AS id, c.name AS name, cp.user_id AS user_id " +
-                "FROM chats c " +
-                "JOIN chat_participants cp ON c.id = cp.chat_id " +
+        String sql = "SELECT c.id AS id, c.name AS name, cp.user_id AS participantId \n" +
+                "FROM chats c \n" +
+                "JOIN chat_participants cp ON c.id = cp.chat_id \n" +
                 "WHERE cp.user_id = ?";
 
         return queryExecutor.executeQuery(sql,
                 new Object[]{userId},
                 resultSet -> {
                     List<Chat> chats = new ArrayList<>();
+
                     try {
                         while (resultSet.next()) {
-                            // Создаем новый объект Chat для каждого результата
                             Chat chat = ChatMapperRepo.mapResultSetToChat(resultSet);
                             if (chat != null) {
                                 chats.add(chat); // Добавляем чат в список

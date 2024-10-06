@@ -14,10 +14,11 @@ public class User {
     private String password;
     private List<Chat> chats = new ArrayList<>();
 
-
-    // Конструктор по умолчанию
     public User() {}
 
+    public User(Long id){
+        this.id = id;
+    }
     // Конструктор с использованием Builder
     private User(UserBuilder builder) {
         this.id = builder.id;
@@ -44,11 +45,12 @@ public class User {
             this.username = username;
             this.password = password;
         }
+
         public UserBuilder(){}
 
         public UserBuilder setUsername(String username) {
             this.username = username;
-            return this; // Возвращаем текущий объект для поддержки цепочки вызовов
+            return this;
         }
 
         public UserBuilder setFirstName(String firstName) {

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepository;
-    private final MessageMapper messageMapper = MessageMapper.INSTANCE;
+    private static final MessageMapper messageMapper = MessageMapper.INSTANCE;
 
     public MessageServiceImpl() {
         this.messageRepository = new MessageRepositoryImpl();
