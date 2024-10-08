@@ -23,9 +23,9 @@ public class CreateUserDto {
     }
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true; // Сравнение ссылок
-        if (!(o instanceof CreateUserDto)) return false; // Проверка типа
-        CreateUserDto that = (CreateUserDto) o; // Приведение типа
+        if (this == o) return true;
+        if (!(o instanceof CreateUserDto)) return false;
+        CreateUserDto that = (CreateUserDto) o;
         return Objects.equals(username, that.username) &&
                 Objects.equals(password, that.password);
     }

@@ -25,13 +25,13 @@ public class ChatServiceImpl implements ChatService {
 
     public ChatServiceImpl() {
         this.chatRepository = new ChatRepositoryImpl();
-        this.userManagementRepository = new UserManagementRepositoryImpl(); // Инициализируем поле
+        this.userManagementRepository = new UserManagementRepositoryImpl();
     }
 
     public ChatServiceImpl(ChatRepository chatRepository,
                            UserManagementRepository userManagementRepository) {
         this.chatRepository = chatRepository;
-        this.userManagementRepository = userManagementRepository; // Инициализируем поле
+        this.userManagementRepository = userManagementRepository;
     }
 
 
@@ -99,7 +99,7 @@ public class ChatServiceImpl implements ChatService {
             throw new IllegalArgumentException("Error fetching user chats");
         }
         return chats.stream()
-                .map(chat -> ChatsMapper.INSTANCE.convert(chat)) // Используем маппер для каждого объекта Chat
+                .map(chat -> ChatsMapper.INSTANCE.convert(chat))
                 .collect(Collectors.toList());
     }
 

@@ -18,15 +18,13 @@ public class ChatMapperRepo {
             return null;
         }
 
+        Chat chat = new Chat.ChatBuilder().setId(id).setName(name).build();
 
-        Chat chat = new Chat.ChatBuilder()
-                .setId(id)
-                .setName(name)
-                .build();
         List<User> participants = new ArrayList<>();
 
         Long participantId = resultSet.getLong("participantId");
-        if (!resultSet.wasNull()) {
+
+        if (!resultSet.wasNull()){
             participants.add(new UserManagementRepositoryImpl().getById(participantId));
         }
 

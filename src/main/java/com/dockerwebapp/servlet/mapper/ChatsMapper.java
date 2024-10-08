@@ -2,6 +2,7 @@ package com.dockerwebapp.servlet.mapper;
 
 import com.dockerwebapp.model.Chat;
 
+import com.dockerwebapp.model.User;
 import com.dockerwebapp.servlet.dto.ChatDto;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -16,15 +17,40 @@ public interface ChatsMapper {
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
-    @Mapping(source = "participantIds", target = "participantIds") // Маппинг идентификаторов участников
+    @Mapping(source = "participantIds", target = "participantIds")
     ChatDto convert(Chat chat); // Из Chat в ChatDto
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
-    // Здесь вы можете добавить кастомный маппинг для участников
-    @Mapping(source = "participantIds", target = "participantIds") // Маппинг идентификаторов участников
+    @Mapping(source = "participantIds", target = "participantIds")
     Chat convert(ChatDto chatDto); // Из ChatDto в Chat
 
-    List<ChatDto> convert(List<Chat> chats); // Метод для преобразования списка
+    List<ChatDto> convert(List<Chat> chats);
+
+
+
+    static Long userToLong(User user) {
+        return user != null ? user.getId() : null;
+    }
+
+
+    static User longToUser(Long id) {
+        if (id == null) return null;
+        User user = new User();
+        user.setId(id);
+        return user;
+    }
+
+    static Long chatToLong(Chat chat) {
+        return chat != null ? chat.getId() : null;
+    }
+
+
+    static Chat longToChat(Long id) {
+        if (id == null) return null;
+        Chat chat = new Chat();
+        chat.setId(id);
+        return chat;
+    }
 
 }

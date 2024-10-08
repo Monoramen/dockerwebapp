@@ -2,8 +2,10 @@ package com.dockerwebapp.repository.impl;
 
 
 
+import com.dockerwebapp.model.Chat;
 import com.dockerwebapp.model.Message;
 
+import com.dockerwebapp.model.User;
 import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import java.sql.SQLException;
@@ -17,11 +19,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MessageRepositoryImplTest  extends AbstractDatabaseTest {
     private MessageRepositoryImpl messageRepository;
+    private User sender;
+    private User sender2;
+    private Chat  chatid;
 
     @BeforeEach
     void init()  throws SQLException {
         initializeDatabaseConnection();
         messageRepository = new MessageRepositoryImpl();
+        sender = new User.UserBuilder().setId(1L).build();
+        sender2 = new User.UserBuilder().setId(2L).build();
+        chatid = new Chat(1L, "Chat1");
     }
 
     @Test
@@ -36,8 +44,8 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
         String datetime = savedMessage.getDateTime().toString();
         assertEquals("1", savedMessage.getId().toString());
         assertEquals("Hello, this is Jane", savedMessage.getText());
-        assertEquals(1L, savedMessage.getSenderId());
-        assertEquals(1L, savedMessage.getChatId());
+        assertEquals(1L, savedMessage.getSenderId().getId());
+        assertEquals(1L, savedMessage.getChatId().getId());
         assertEquals(datetime, savedMessage.getDateTime().toString());
     }
 
@@ -45,11 +53,12 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
     void testSaveMessage() throws SQLException {
         Message message = new Message();
         message.setText("Hello, world!");
-        message.setSenderId(1L);
+        message.setSenderId(sender);
+        message.setChatId(chatid);
         message.setDateTime(LocalDateTime.now());
         messageRepository.save(message);
         List<Message> savedMessage = messageRepository.findAll(1L);
-        assertEquals(2, savedMessage.size());
+        assertEquals(3, savedMessage.size());
     }
 
     @Test
@@ -70,7 +79,8 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
     void testDeleteMessage() throws SQLException {
         Message message = new Message();
         message.setText("Hello, world!");
-        message.setSenderId(1L);
+        message.setSenderId(sender);
+        message.setChatId(chatid);
         message.setDateTime(LocalDateTime.now());
         messageRepository.save(message);
         messageRepository.delete(5L);
@@ -80,26 +90,24 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
 
     @Test
     void testFindByChatId() throws SQLException {
-        // Предполагаем, что в базе данных уже есть данные для чата с id = 1
         List<Message> messages = messageRepository.findByChatId(1L);
 
-        // Проверяем, что сообщения не пустые
         assertNotNull(messages);
         assertFalse(messages.isEmpty(), "Messages list should not be empty");
 
-        // Выводим сообщения для проверки
         for (Message message : messages) {
             System.out.println(message);
         }
 
-        // Дополнительные проверки на содержание сообщений
-        assertEquals(2, messages.size()); // Предполагаем, что в чате 1 два сообщения
+        assertEquals(2, messages.size());
     }
     @Test
     void testFindAllByChatId() throws SQLException {
         List<Message> expectedMessages = List.of(
-                new Message(1L, "Hello, this is Jane", LocalDateTime.of(2024, 9, 22, 18, 38, 52), 1L, 1L),
-                new Message(2L, "Hi Jane, this is Michael", LocalDateTime.of(2024, 9, 22, 18, 38, 52), 2L, 1L)
+                new Message(1L, "Hello, this is Jane",
+                        LocalDateTime.of(2024, 9, 22, 18, 38, 52), sender, chatid),
+                new Message(2L, "Hi Jane, this is Michael",
+                        LocalDateTime.of(2024, 9, 22, 18, 38, 52), sender2, chatid)
         );
 
         List<Message> actualMessages = messageRepository.findAll(1L);
@@ -112,9 +120,9 @@ class MessageRepositoryImplTest  extends AbstractDatabaseTest {
 
             assertEquals(expected.getId(), actual.getId(), "Message ID should match");
             assertEquals(expected.getText(), actual.getText(), "Message text should match");
-            assertEquals(expected.getSenderId(), actual.getSenderId(), "Sender ID should match");
-            assertEquals(expected.getChatId(), actual.getChatId(), "Chat ID should match");
-            // Игнорируем dateTime для сравнения
+            assertEquals(expected.getSenderId().getId(), actual.getSenderId().getId(), "Sender ID should match");
+            assertEquals(expected.getChatId().getId(), actual.getChatId().getId(), "Chat ID should match");
+
         }
     }
 

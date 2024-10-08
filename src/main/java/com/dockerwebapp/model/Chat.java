@@ -61,7 +61,6 @@ public class Chat {
         this.messages = messages;
     }
 
-    // Статический класс Builder
     public static class ChatBuilder {
         private Long id;
         private String name;

@@ -7,12 +7,10 @@ import java.util.function.Function;
 public class QueryExecutor {
     private DataBaseConnector dataBaseConnector;
 
-    // Конструктор с передачей соединения
     public QueryExecutor(Properties properties) {
         this.dataBaseConnector = DataBaseConnectorFactory.getInstance(properties);
     }
 
-    // Конструктор без параметров
     public QueryExecutor() {
         this.dataBaseConnector = DataBaseConnectorFactory.getInstance();
     }
@@ -38,7 +36,7 @@ public class QueryExecutor {
         try (Connection connection = dataBaseConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             setParameters(preparedStatement, params);
-            return preparedStatement.executeUpdate(); // Возвращает количество затронутых строк
+            return preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
             throw e;

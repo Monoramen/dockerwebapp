@@ -72,21 +72,21 @@ public class UserDto {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true; // Сравнение ссылок
-        if (!(o instanceof UserDto)) return false; // Проверка типа
-        UserDto userDto = (UserDto) o; // Приведение типа
-        return Objects.equals(id, userDto.id) && // Сравнение полей
+        if (this == o) return true;
+        if (!(o instanceof UserDto)) return false;
+        UserDto userDto = (UserDto) o;
+        return Objects.equals(id, userDto.id) &&
                 Objects.equals(username, userDto.username) &&
                 Objects.equals(firstName, userDto.firstName) &&
                 Objects.equals(lastName, userDto.lastName) &&
                 Objects.equals(about, userDto.about) &&
                 Objects.equals(password, userDto.password);
-        // Не сравниваем chats, если это не нужно
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, firstName, lastName, about, password); // Генерация хэш-кода на основе полей
+        return Objects.hash(id, username, firstName, lastName, about, password);
     }
     @Override
     public String toString() {

@@ -87,7 +87,6 @@ public class ChatServletTest {
 
     @Test
     void testDoGet_UserChatsSuccess() throws Exception {
-        // Эмуляция URL с userId и запросом чатов
         when(request.getPathInfo()).thenReturn("/1/chats");
 
         Long userId = 1L;
@@ -113,7 +112,6 @@ public class ChatServletTest {
 
     @Test
     void testDoGet_SingleChatSuccess() throws Exception {
-        // Эмуляция URL для получения конкретного чата
         when(request.getPathInfo()).thenReturn("/1/chat/2");
 
         Long chatId = 2L;
@@ -127,9 +125,9 @@ public class ChatServletTest {
         objectMapper.writeValue(outputStream, chatDto);
 
         chatServlet.doGet(request, response);
-
-        verify(response).setStatus(HttpServletResponse.SC_OK);
         verify(response).setContentType("application/json");
+        verify(response).setStatus(HttpServletResponse.SC_OK);
+
 
         verify(objectMapper).writeValue(outputStream, chatDto);
     }

@@ -22,7 +22,7 @@ class UserManagementServiceImplTest {
     @BeforeEach
     void setUp() {
         userRepository = Mockito.mock(UserManagementRepository.class);
-        userManagementService = new UserManagementServiceImpl(userRepository); // Внедряем мок через конструктор
+        userManagementService = new UserManagementServiceImpl(userRepository);
     }
 
     @Test
@@ -37,7 +37,6 @@ class UserManagementServiceImplTest {
 
     @Test
     void testUpdateUser() throws SQLException {
-        // Arrange
         UserDto userDto = new UserDto();
         userDto.setUsername("existinguser");
         userDto.setFirstName("John");
@@ -46,13 +45,11 @@ class UserManagementServiceImplTest {
         userDto.setPassword("password");
         userManagementService.updateUser(userDto);
         verify(userRepository).updateUser(any(User.class));
-
  }
 
 
     @Test
     void testGetByUsername() throws SQLException {
-
         String username = "username";
         User expectedUser = new User();
         expectedUser.setId(1L);
@@ -64,7 +61,7 @@ class UserManagementServiceImplTest {
         createUserDto.setPassword("password");
         userManagementService.createUser(createUserDto);
 
-        when(userRepository.getByUsername(username)).thenReturn(expectedUser); // Настраиваем мок
+        when(userRepository.getByUsername(username)).thenReturn(expectedUser);
         UserDto actualUser = userManagementService.getByUsername(username);
         assertEquals(expectedUser.getId(), actualUser.getId());
         assertEquals(expectedUser.getUsername(), actualUser.getUsername());
@@ -94,6 +91,6 @@ class UserManagementServiceImplTest {
     void testDeleteUser() throws SQLException {
         String username = "userToDelete";
         userManagementService.deleteUser(username);
-        verify(userRepository).deleteUser(username); // Проверяем вызов метода deleteUser с правильным именем пользователя
+        verify(userRepository).deleteUser(username);
     }
 }

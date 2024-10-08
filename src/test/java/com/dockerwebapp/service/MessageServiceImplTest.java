@@ -1,12 +1,15 @@
 package com.dockerwebapp.service;
 
+import com.dockerwebapp.model.Chat;
 import com.dockerwebapp.model.Message;
+import com.dockerwebapp.model.User;
 import com.dockerwebapp.repository.MessageRepository;
 import com.dockerwebapp.service.impl.MessageServiceImpl;
 import com.dockerwebapp.servlet.dto.MessageDto;
 import com.dockerwebapp.servlet.mapper.MessageMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import java.sql.SQLException;
@@ -23,60 +26,64 @@ class MessageServiceImplTest {
     private MessageServiceImpl messageService;
     private MessageRepository messageRepository;
     private MessageMapper messageMapper;
+    private User sender;
+    private User sender2;
+    private Chat chatId;
+
 
     @BeforeEach
     void setUp() {
         messageRepository = Mockito.mock(MessageRepository.class);
         messageMapper = Mockito.mock(MessageMapper.class);
-        messageService = new MessageServiceImpl(messageRepository); // Внедряем моки через конструктор
+        messageService = new MessageServiceImpl(messageRepository);
+
+        sender = new User.UserBuilder().setId(1L).build();
+        sender2 = new User.UserBuilder().setId(2L).setUsername("name").setFirstName("fname").setLastName("lname").build();
+        chatId = new Chat(1L, "Chat1");
     }
 
     @Test
     void testFindAll() throws SQLException {
-        // Arrange
-        Long chatId = 1L;
         List<Message> messages = Arrays.asList(
-                new Message(1L, "Hello, this is Jane", LocalDateTime.now(), 1L, chatId),
-                new Message(2L, "Hi Jane, this is Michael", LocalDateTime.now(), 2L, chatId)
+                new Message(1L, "Hello, this is Jane", LocalDateTime.now(), sender, chatId),
+                new Message(2L, "Hi Jane, this is Michael", LocalDateTime.now(), sender2, chatId)
         );
 
-        when(messageRepository.findAll(chatId)).thenReturn(messages);
+        when(messageRepository.findAll(chatId.getId())).thenReturn(messages);
         when(messageMapper.convert(any(Message.class))).thenAnswer(invocation -> {
             Message msg = invocation.getArgument(0);
-            return new MessageDto(msg.getId(), msg.getText(), msg.getDateTime().toString(), msg.getSenderId(), msg.getChatId());
+            return new MessageDto(msg.getId(), msg.getText(), msg.getDateTime().toString(), msg.getSenderId().getId(), msg.getChatId().getId());
         });
 
-        // Act
-        List<MessageDto> result = messageService.findAll(chatId);
+        List<MessageDto> result = messageService.findAll(chatId.getId());
 
-        // Assert
         assertEquals(messages.size(), result.size());
-        verify(messageRepository).findAll(chatId); // Проверяем вызов метода findAll с правильным ID
+        verify(messageRepository).findAll(chatId.getId());
     }
 
     @Test
     void testFindByChatId() throws SQLException {
-        Long chatId = 1L;
+
         List<Message> messages = Arrays.asList(
-                new Message(1L, "Hello, this is Jane", LocalDateTime.now(), 1L, chatId)
+                new Message(1L, "Hello, this is Jane", LocalDateTime.now(), sender, chatId)
         );
 
-        when(messageRepository.findByChatId(chatId)).thenReturn(messages);
-        List<MessageDto> result = messageService.findByChatId(chatId);
+        when(messageRepository.findByChatId(chatId.getId())).thenReturn(messages);
+        List<MessageDto> result = messageService.findByChatId(chatId.getId());
         assertEquals(messages.size(), result.size());
-        verify(messageRepository).findByChatId(chatId); // Проверяем вызов метода findByChatId с правильным ID
+        verify(messageRepository).findByChatId(chatId.getId());
     }
 
     @Test
     void testFindById() throws SQLException {
         Long id = 1L;
-        Message message = new Message(id, "Hello", LocalDateTime.now(), 1L, 1L);
+        Message message = new Message(id, "Hello", LocalDateTime.now(), sender, chatId);
 
         when(messageRepository.findById(id)).thenReturn(message);
         MessageDto result = messageService.findById(id);
         assertNotNull(result);
         assertEquals(message.getText(), result.getText());
-        verify(messageRepository).findById(id); // Проверяем вызов метода findById с правильным ID
+        verify(messageRepository).findById(id);
     }
 
 
@@ -89,38 +96,51 @@ class MessageServiceImplTest {
     }
     @Test
     void testSave() throws SQLException {
-        // Arrange
-        MessageDto messageDto = new MessageDto(3L, "New message", "2024-09-22 13:58:58", 2L, 1L);
+        MessageDto messageDto = new MessageDto(3L, "New message", "2024-09-22 13:58:58", 1L, 1L);
 
         Message message = new Message();
         message.setText("New message");
-        message.setSenderId(2L);
-        message.setChatId(1L);
+        message.setSenderId(sender);
+        message.setChatId(chatId);
         message.setDateTime(LocalDateTime.parse("2024-09-22 13:58:58", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         when(messageMapper.convert(messageDto)).thenReturn(message);
         messageService.save(messageDto);
         verify(messageRepository).save(argThat(savedMessage ->
                 savedMessage.getText().equals("New message") &&
-                        savedMessage.getSenderId().equals(2L) &&
-                        savedMessage.getChatId().equals(1L) &&
-                        savedMessage.getDateTime().equals(LocalDateTime.parse("2024-09-22 13:58:58", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                        savedMessage.getSenderId().getId().equals(1L) &&
+                        savedMessage.getChatId().getId().equals(1L) &&
+                        savedMessage.getDateTime().equals(LocalDateTime.parse("2024-09-22 13:58:58",
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
         ));
     }
 
     @Test
     void testUpdate() throws SQLException {
-        MessageDto messageDto = new MessageDto(1L, "Updated message", "2024-09-22 13:58:58", 2L, 1L);
+        MessageDto messageDto = new MessageDto(1L, "Updated message", "2024-09-22 13:58:58", sender2.getId(), chatId.getId());
+
         Message message = new Message();
         message.setId(1L);
         message.setText("Updated message");
-        message.setSenderId(2L);
-        message.setChatId(1L);
-        message.setDateTime(LocalDateTime.parse("2024-09-22 13:58:58", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        when(messageMapper.convert(messageDto)).thenReturn(message);
-        messageService.update(messageDto);
-        verify(messageRepository).update(message); // Проверяем вызов метода update с правильным объектом сообщения
-    }
+        message.setSenderId(sender2);
+        message.setChatId(chatId);
 
+        message.setDateTime(LocalDateTime.parse("2024-09-22 13:58:58", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+        when(messageMapper.convert(messageDto)).thenReturn(message);
+
+        messageService.update(messageDto);
+
+        ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
+        verify(messageRepository).update(messageCaptor.capture());
+
+        Message capturedMessage = messageCaptor.getValue();
+        assertEquals(1L, capturedMessage.getId());
+        assertEquals(1L, capturedMessage.getChatId().getId());
+        assertEquals(2L, capturedMessage.getSenderId().getId());
+        assertEquals("Updated message", capturedMessage.getText());
+        assertEquals(LocalDateTime.parse("2024-09-22 13:58:58", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), capturedMessage.getDateTime());
+
+    }
 
 
     @Test

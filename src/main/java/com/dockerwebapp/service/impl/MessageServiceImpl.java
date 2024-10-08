@@ -22,7 +22,7 @@ public class MessageServiceImpl implements MessageService {
         this.messageRepository = new MessageRepositoryImpl();
     }
 
-    public MessageServiceImpl(MessageRepository messageRepository) { // Конструктор для внедрения зависимости
+    public MessageServiceImpl(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
     }
     @Override
@@ -59,24 +59,24 @@ public class MessageServiceImpl implements MessageService {
         } catch (SQLException e) {
             throw new IllegalArgumentException(e);
         }
-        return messageMapper.convert(message);  // Преобразуем сущность в DTO
+        return messageMapper.convert(message);
     }
 
 
     @Override
     public MessageDto save(MessageDto messageDto) {
-        Message message = messageMapper.convert(messageDto);  // Преобразуем DTO в сущность
+        Message message = messageMapper.convert(messageDto);
         try {
             messageRepository.save(message);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e);
         }
-        return messageMapper.convert(message);  // Возвращаем сохранённое сообщение в виде DTO
+        return messageMapper.convert(message);
     }
 
     @Override
     public void update(MessageDto messageDto) {
-        Message message = messageMapper.convert(messageDto);  // Преобразуем DTO в сущность
+        Message message = messageMapper.convert(messageDto);
         try {
             messageRepository.update(message);
         } catch (SQLException e) {

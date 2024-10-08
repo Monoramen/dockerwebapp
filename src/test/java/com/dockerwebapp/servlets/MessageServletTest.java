@@ -93,7 +93,6 @@ public class MessageServletTest {
 
     @Test
     void testDoGetServiceException() throws Exception {
-        // Мокаем путь запроса
         when(request.getPathInfo()).thenReturn("/chat/1");
         when(messageService.findAll(1L)).thenThrow(new RuntimeException("Database error"));
         messageServlet.doGet(request, response);

@@ -61,10 +61,10 @@ class UserManagementRepositoryImplTest  extends AbstractDatabaseTest {
         void testDeleteUser() throws SQLException {
             userManagementRepository = new UserManagementRepositoryImpl();
             User user = createUser(1L, "john_doe", "password123");
-            userManagementRepository.createUser(user); // Сначала создаем пользователя
+            userManagementRepository.createUser(user);
             userManagementRepository.deleteUser(user.getUsername());
             User deletedUser = userManagementRepository.getByUsername("john_doe");
-            assertNull(deletedUser); // Пользователь должен быть удален
+            assertNull(deletedUser);
         }
 
 

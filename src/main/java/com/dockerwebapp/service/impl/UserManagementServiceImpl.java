@@ -33,7 +33,6 @@ public class UserManagementServiceImpl implements UserManagementService {
         try {
             userRepository.createUser(user);
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException("Database error while creating user: " + e.getMessage(), e);
         }
     }
@@ -44,7 +43,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         try {
             userRepository.updateUser(user);
         } catch (SQLException e) {
-          throw new IllegalArgumentException("Database error while updating user");
+            throw new IllegalArgumentException("Database error while updating user");
         }
 
     }

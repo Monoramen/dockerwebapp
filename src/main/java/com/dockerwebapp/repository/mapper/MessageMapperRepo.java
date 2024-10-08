@@ -1,6 +1,8 @@
 package com.dockerwebapp.repository.mapper;
 
+import com.dockerwebapp.model.Chat;
 import com.dockerwebapp.model.Message;
+import com.dockerwebapp.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +17,13 @@ public class MessageMapperRepo {
         LocalDateTime dateTime = resultSet.getTimestamp("date_time").toLocalDateTime();
         Long senderId = resultSet.getLong("sender_id");
         Long chatId = resultSet.getLong("chat_id");
-        return new Message(id, text, dateTime, senderId, chatId);
+
+        User sender = new User();
+        sender.setId(senderId);
+
+        Chat chat = new Chat();
+        chat.setId(chatId);
+
+        return new Message(id, text, dateTime, sender, chat);
     }
 }
