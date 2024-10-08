@@ -45,11 +45,11 @@ public class ChatDto {
 
 
     public List<UserInfoDto> getParticipantIds() {
-        return participantIds; // Геттер для идентификаторов участников
+        return participantIds;
     }
 
     public void setParticipantIds(List<UserInfoDto> participantIds) {
-        this.participantIds = participantIds; // Сеттер для идентификаторов участников
+        this.participantIds = participantIds;
     }
 
 

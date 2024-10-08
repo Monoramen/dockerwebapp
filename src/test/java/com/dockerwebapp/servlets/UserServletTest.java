@@ -76,7 +76,7 @@ class UserServletTest {
     @Test
     void testDoGet_UserNotFound() throws Exception {
         when(request.getPathInfo()).thenReturn("/1");
-        when(userService.getById(1L)).thenReturn(null); // Мокируем ответ сервиса
+        when(userService.getById(1L)).thenReturn(null);
         userServlet.doGet(request, response);
         verify(response).sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
     }
@@ -84,7 +84,6 @@ class UserServletTest {
 
     @Test
     void testDoGet() throws Exception {
-        // Мокируем PathInfo для запроса
         when(request.getPathInfo()).thenReturn("/1");
 
         Long id = 1L;
@@ -130,7 +129,7 @@ class UserServletTest {
 
     @Test
     void testDoPost_BadRequest_EmptyBody() throws Exception {
-        when(request.getContentLength()).thenReturn(0); // Simulating empty body
+        when(request.getContentLength()).thenReturn(0);
         userServlet.doPost(request, response);
         verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Request body is empty");
     }
@@ -173,13 +172,12 @@ class UserServletTest {
         when(request.getInputStream()).thenReturn(new MockServletInputStream(jsonBytes));
         doThrow(new SQLException("Database error while updating user")).when(userService).updateUser(any(UserDto.class));
         userServlet.doPut(request, response);
-        verify(userService).updateUser(any(UserDto.class)); // Verify that updateUser was called
+        verify(userService).updateUser(any(UserDto.class));
         verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to update user");
     }
 
     @Test
     void testDoPutSuccess() throws Exception {
-        // Мокаем pathInfo для получения ID из URL
         when(request.getPathInfo()).thenReturn("/1");
         String json = "{\"username\":\"John Doe\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"about\":\"About John Doe\",\"password\":\"password123\"}";
         byte[] jsonBytes = json.getBytes(StandardCharsets.UTF_8);
@@ -198,7 +196,6 @@ class UserServletTest {
         userDto.setAbout(about);
         userDto.setPassword(password);
         userDto.setId(id);
-
 
         ServletInputStream inputStream = new MockServletInputStream(jsonBytes);
         when(request.getInputStream()).thenReturn(inputStream);

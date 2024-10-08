@@ -46,22 +46,20 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
 
     @Test
     void testAddChat() throws SQLException {
-        // Arrange
         Chat chat = new Chat();
         chat.setId(3L);
         chat.setName("My Chat");
         chat.setParticipantIds(participants);
-        // Act
-        chatRepository.addChat(chat); // Добавляем чат
 
-        // Assert
-        List<Chat> chats = chatRepository.getUserChats(participants.get(0).getId()); // Получаем чаты для первого участника
+        chatRepository.addChat(chat);
+
+        List<Chat> chats = chatRepository.getUserChats(participants.get(0).getId());
         assertNotNull(chats);
         assertFalse(chats.isEmpty());
-        assertEquals("My Chat", chats.get(chats.size() - 1).getName()); // Проверяем имя последнего добавленного чата
+        assertEquals("My Chat", chats.get(chats.size() - 1).getName());
 
         // Clean up
-        chatRepository.deleteChat(chat.getId()); // Удаляем чат после теста
+        chatRepository.deleteChat(chat.getId());
     }
 
     @Test
@@ -71,7 +69,7 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
         chat.setId(1L);
         chat.setName("Updated Chat Name");
         chatRepository.updateChat(chat);
-        assertEquals("Updated Chat Name", chats.get(0).getName()); // Проверяем обновленное имя чата
+        assertEquals("Updated Chat Name", chats.get(0).getName());
     }
 
 
@@ -83,7 +81,7 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
         chatRepository.deleteChat(chat.getId());
         chat.setId(2L);
         chatRepository.deleteChat(chat.getId());
-        List<Chat> chats = chatRepository.getUserChats(1L); // Проверяем, что чат был удален
+        List<Chat> chats = chatRepository.getUserChats(1L);
         assertTrue(chats.isEmpty());
     }
 
@@ -97,16 +95,16 @@ class ChatRepositoryImplTest  extends AbstractDatabaseTest {
 
     @Test
     void testGetUserChats() throws SQLException {
-        List<Chat> chats = chatRepository.getUserChats(1L); // Получаем чаты пользователя с id=1
+        List<Chat> chats = chatRepository.getUserChats(1L);
         assertNotNull(chats);
-        assertEquals(0, chats.size()); // Проверяем количество чатов
+        assertEquals(0, chats.size());
     }
 
 
     @Test
     void testGetUserChatsAtLeastTwoparticipants() {
         Chat chat1 = createChat(1L, "Chat One");
-        assertThrows(SQLException.class, () -> chatRepository.addChat(chat1)); // Проверяем количество чатов
+        assertThrows(SQLException.class, () -> chatRepository.addChat(chat1));
     }
 
 }

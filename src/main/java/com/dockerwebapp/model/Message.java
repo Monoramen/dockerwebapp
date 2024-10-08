@@ -11,19 +11,19 @@ public class Message {
     private Long id;
     private String text;
     private LocalDateTime dateTime;
-    private Long senderId; // отправитель сообщения
-    private Long chatId;
+    private User senderId;
+    private Chat chatId;
 
-    public Long getChatId() {
+    public Chat getChatId() {
         return chatId;
     }
 
-    public void setChatId(Long chatId) {
+    public void setChatId(Chat chatId) {
         this.chatId = chatId;
     }
 
 
-    public Message(Long id, String text,LocalDateTime dateTime, Long senderId, Long chatId) {
+    public Message(Long id, String text,LocalDateTime dateTime, User senderId, Chat chatId) {
         this.id = id;
         this.text = text;
         this.dateTime = dateTime;
@@ -31,19 +31,16 @@ public class Message {
         this.chatId = chatId;
     }
 
-    public Message() {
+    public Message() {}
 
-    }
-
-    public Long getSenderId() {
+    public User getSenderId() {
         return senderId;
     }
 
-    public void setSenderId(Long senderId) {
+    public void setSenderId(User senderId) {
         this.senderId = senderId;
     }
 
-    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }
@@ -68,7 +65,6 @@ public class Message {
         this.dateTime = dateTime;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,7 +81,6 @@ public class Message {
     public int hashCode() {
         return Objects.hash(id, text, dateTime,senderId, chatId);
     }
-
 
     @Override
     public String toString() {

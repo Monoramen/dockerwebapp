@@ -27,6 +27,10 @@ public class ChatServlet extends HttpServlet {
     private transient ObjectMapper objectMapper;
     private static final Logger logger = LoggerFactory.getLogger(ChatServlet.class);
 
+    private void setResponseHeaders(HttpServletResponse response) {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+    }
     @Override
     public void init() throws ServletException {
         this.chatService = (ChatService) getServletContext().getAttribute("chatService");
@@ -37,6 +41,7 @@ public class ChatServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws  IOException {
         String pathInfo = request.getPathInfo();
+        setResponseHeaders(response);
         Long userId;
         if (pathInfo != null) {
             String[] pathParts = pathInfo.split("/");
@@ -46,7 +51,6 @@ public class ChatServlet extends HttpServlet {
                     List<ChatDto> chats;
                     try {
                         chats = chatService.getUserChats(userId);
-                        response.setContentType("application/json");
                         response.setStatus(HttpServletResponse.SC_OK);
                         objectMapper.writeValue(response.getOutputStream(), chats);
                     } catch (SQLException e) {
@@ -57,7 +61,6 @@ public class ChatServlet extends HttpServlet {
                 Long chatId = Long.valueOf(pathParts[3]);
                 ChatDto chat;
                 chat = chatService.getChatById(chatId);
-                response.setContentType("application/json");
                 response.setStatus(HttpServletResponse.SC_OK);
                 objectMapper.writeValue(response.getOutputStream(), chat);
             }
@@ -70,7 +73,7 @@ public class ChatServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws  IOException {
         String pathInfo = request.getPathInfo();
-
+        setResponseHeaders(response);
         if (pathInfo != null) {
             String[] pathParts = pathInfo.split("/");
 
@@ -80,6 +83,7 @@ public class ChatServlet extends HttpServlet {
                         logger.debug("Converted ChatDtoParticipant: {}", chatDto);
                         chatService.addChat(chatDto);
                         response.setStatus(HttpServletResponse.SC_CREATED);
+
                 } catch (Exception e) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to create chat");
                 }
@@ -91,7 +95,7 @@ public class ChatServlet extends HttpServlet {
     @Override
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo();
-
+        setResponseHeaders(response);
         if (pathInfo != null) {
             String[] pathParts = pathInfo.split("/");
 
@@ -112,7 +116,7 @@ public class ChatServlet extends HttpServlet {
     @Override
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws  IOException {
         String pathInfo = request.getPathInfo();
-
+        setResponseHeaders(response);
         if (pathInfo != null) {
             String[] pathParts = pathInfo.split("/");
 
@@ -120,7 +124,6 @@ public class ChatServlet extends HttpServlet {
                 try {
                     Long chatId = Long.valueOf(pathParts[3]);
                     chatService.deleteChat(chatId);
-                    response.setContentType("application/json");
                     response.setStatus(HttpServletResponse.SC_ACCEPTED);
                 } catch (Exception e) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Failed to delete chat");

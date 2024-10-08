@@ -46,10 +46,9 @@ class DataBaseConnectorTest {
         properties.setProperty("db.user", postgresContainer.getUsername());
         properties.setProperty("db.password", postgresContainer.getPassword());
         DataBaseConnector dataBaseConnector = new DataBaseConnector(properties);
-        // Получаем соединение с базой данных
+
         try ( Connection connection = dataBaseConnector.getConnection()){
             assertNotNull(connection);
-            // Дополнительные проверки соединения можно добавить здесь
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Failed to connect to the database");

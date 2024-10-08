@@ -19,7 +19,7 @@ public class User {
     public User(Long id){
         this.id = id;
     }
-    // Конструктор с использованием Builder
+
     private User(UserBuilder builder) {
         this.id = builder.id;
         this.username = builder.username;
@@ -68,8 +68,6 @@ public class User {
             return this;
         }
 
-
-
         public UserBuilder setChats(List<Chat> chats) {
             this.chats = chats != null ? new ArrayList<>(chats) : new ArrayList<>();
             return this;
@@ -81,8 +79,8 @@ public class User {
 
 
         public UserBuilder setId(Long id) {
-            this.id = id; // Добавлен сеттер для id
-            return this; // Возвращаем текущий объект для поддержки цепочки вызовов
+            this.id = id;
+            return this;
         }
     }
 
@@ -91,7 +89,7 @@ public class User {
         return id;
     }
 
-    public void setId(Long id) { // Добавлен сеттер для id
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -111,9 +109,8 @@ public class User {
         this.password = password;
     }
 
-
     public List<Chat> getChats() {
-        return new ArrayList<>(chats); // Возвращаем копию списка
+        return new ArrayList<>(chats);
     }
 
     public String getFirstName() {

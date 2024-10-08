@@ -16,10 +16,11 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
 
     @Override
     public void createUser(User user) throws SQLException {
-        String sql = "INSERT INTO users (username, password) " +
-                "VALUES (?, ?) " +
-                "ON CONFLICT (username) DO UPDATE " +
-                "SET password = EXCLUDED.password"; // Обновляем только
+        String sql = """
+                INSERT INTO users (username, password) VALUES (?, ?) 
+                ON CONFLICT (username) DO UPDATE 
+                SET password = EXCLUDED.password 
+                """;
         queryExecutor.executeUpdate(
                 sql,
                 new Object[]{
@@ -30,13 +31,14 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
 
     @Override
     public void updateUser(User user) throws SQLException {
-        String sql = "UPDATE users SET " +
-                "username = ?, " +
-                "first_name = ?, " +
-                "last_name = ?," +
-                "about = ?, " +
-                "password = ? " +
-                "WHERE id = ?";
+        String sql = """
+                UPDATE users SET username = ?, 
+                first_name = ?, 
+                last_name = ?, 
+                about = ?, 
+                password = ? 
+                WHERE id = ?
+                """;
         queryExecutor.executeUpdate(
                 sql,
                 new Object[]{
@@ -51,7 +53,6 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
 
     @Override
     public void deleteUser(String username) throws SQLException {
-        // Сначала получаем ID пользователя по имени
         String getUserIdSql = "SELECT id FROM users WHERE username = ?";
         Long userId = queryExecutor.executeQuery(getUserIdSql, new Object[]{username}, resultSet -> {
             try {
@@ -59,9 +60,9 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
                     return resultSet.getLong("id");
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                new SQLException("Cannot find user");
             }
-            return null; // Если пользователь не найден, возвращаем null
+            return null;
         });
 
         if (userId != null) {
@@ -95,10 +96,11 @@ public class UserManagementRepositoryImpl implements UserManagementRepository {
 
     @Override
     public User getById(Long id) throws SQLException {
-        String sql = "SELECT u.*, "
-                + "(SELECT json_agg(c) FROM chats c JOIN chat_participants cp " +
-                "ON c.id = cp.chat_id WHERE cp.user_id = u.id) AS chats "
-                + "FROM users u WHERE u.id = ?";
+        String sql = """
+                SELECT u.*, (SELECT json_agg(c) FROM chats c JOIN chat_participants cp 
+                ON c.id = cp.chat_id WHERE cp.user_id = u.id) AS chats 
+                FROM users u WHERE u.id = ?
+                """;
 
         return queryExecutor.executeQuery(sql, new Object[]{id}, resultSet -> {
             try {

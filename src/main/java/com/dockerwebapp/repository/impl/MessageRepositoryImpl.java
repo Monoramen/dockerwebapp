@@ -1,8 +1,12 @@
 package com.dockerwebapp.repository.impl;
 
 import com.dockerwebapp.db.QueryExecutor;
+import com.dockerwebapp.model.Chat;
 import com.dockerwebapp.model.Message;
+import com.dockerwebapp.model.User;
+import com.dockerwebapp.repository.ChatRepository;
 import com.dockerwebapp.repository.MessageRepository;
+import com.dockerwebapp.repository.UserManagementRepository;
 import com.dockerwebapp.repository.mapper.MessageMapperRepo;
 
 import java.sql.*;
@@ -16,13 +20,15 @@ public class MessageRepositoryImpl implements MessageRepository {
         this.queryExecutor = new QueryExecutor();
     }
 
+    private ChatRepository chatRepository =  new ChatRepositoryImpl();
+    private UserManagementRepository userRepository = new UserManagementRepositoryImpl();
+
     @Override
     public List<Message> findAll(Long chatId) throws SQLException {
-        String sql = "SELECT m.id, m.text, m.date_time, " +
-                "m.sender_id, " + // Убедитесь, что здесь есть запятая
-                "m.chat_id " +
-                "FROM messages m " +
-                "WHERE m.chat_id = ?";
+        String sql = """
+               SELECT m.id, m.text, m.date_time, m.sender_id, m.chat_id 
+               FROM messages m WHERE m.chat_id = ?
+               """;
 
         return queryExecutor.executeQuery(
                 sql,
@@ -31,7 +37,13 @@ public class MessageRepositoryImpl implements MessageRepository {
                     List<Message> messages = new ArrayList<>();
                     try {
                         while (resultSet.next()) {
-                            messages.add(MessageMapperRepo.mapResultSetToMessage(resultSet));
+                            Message message = MessageMapperRepo.mapResultSetToMessage(resultSet);
+
+                            User sender = userRepository.getById(message.getSenderId().getId());
+                            Chat chat = chatRepository.getChatById(message.getChatId().getId());
+                            message.setSenderId(sender);
+                            message.setChatId(chat);
+                            messages.add(message);
                         }
                     } catch (SQLException e) {
                         throw new IllegalArgumentException("Error processing result set", e);
@@ -43,17 +55,10 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public Message findById(Long id) throws SQLException {
-        String sql = "SELECT m.id, " +
-                "m.text, " +
-                "m.date_time, " +
-                "u.id AS sender_id, " +
-                "u.username AS sender_username, " +
-                "c.id AS chat_id, " +
-                "c.name AS chat_name " +
-                "FROM messages m " +
-                "JOIN users u ON m.sender_id = u.id " +
-                "JOIN chats c ON m.chat_id = c.id " +
-                "WHERE m.id = ?";
+        String sql = """
+                SELECT m.id, m.text, m.date_time, m.sender_id, m.chat_id 
+                FROM messages m WHERE m.id = ?
+                """;
 
         return queryExecutor.executeQuery(
                 sql,
@@ -61,12 +66,17 @@ public class MessageRepositoryImpl implements MessageRepository {
                 resultSet -> {
                     try {
                         if (resultSet.next()) {
-                            return MessageMapperRepo.mapResultSetToMessage(resultSet);
+                            Message message = MessageMapperRepo.mapResultSetToMessage(resultSet);
+                            User sender = userRepository.getById(resultSet.getLong("sender_id"));
+                            Chat chat = chatRepository.getChatById(resultSet.getLong("chat_id"));
+                            message.setSenderId(sender);
+                            message.setChatId(chat);
+                            return message;
                         }
                     } catch (SQLException e) {
                         throw new IllegalArgumentException(e);
                     }
-                    return null;  // Если сообщение не найдено, возвращаем null
+                    return null;
                 }
         );
     }
@@ -80,17 +90,15 @@ public class MessageRepositoryImpl implements MessageRepository {
 
         String sql = "INSERT INTO messages (text, sender_id, chat_id, date_time) VALUES (?, ?, ?, ?)";
 
-        // Используем executeUpdate для выполнения операции вставки
-     queryExecutor.executeUpdate(
+        queryExecutor.executeUpdate(
                 sql,
                 new Object[]{
                         message.getText(),
-                        message.getSenderId(),  // Убедитесь, что sender не равен null
-                        message.getChatId(),     // Убедитесь, что chat не равен null
-                        Timestamp.valueOf(message.getDateTime()) // Преобразуем LocalDateTime в Timestamp
+                        message.getSenderId().getId(),
+                        message.getChatId().getId(),
+                        Timestamp.valueOf(message.getDateTime())
                 }
         );
-
     }
 
     @Override
@@ -98,7 +106,7 @@ public class MessageRepositoryImpl implements MessageRepository {
         String sql = "UPDATE messages SET text = ?, date_time = ? WHERE id = ?";
         queryExecutor.executeUpdate(sql, new Object[]{
                 message.getText(),
-                Timestamp.valueOf(message.getDateTime()), // Преобразуем LocalDateTime в Timestamp
+                Timestamp.valueOf(message.getDateTime()),
                 message.getId()
         });
     }
@@ -114,13 +122,12 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public List<Message> findByChatId(Long chatId) throws SQLException {
-        String sql = "SELECT m.id, m.text, m.date_time, " +
-                "u.id AS sender_id, u.username AS sender_username, " +
-                "m.chat_id AS chat_id, c.name AS chat_name " + // Добавляем chat_id и chat_name
-                "FROM messages m " +
-                "JOIN users u ON m.sender_id = u.id " +
-                "JOIN chats c ON m.chat_id = c.id " + // Присоединяем таблицу chats
-                "WHERE m.chat_id = ?";
+        String sql = """
+                SELECT m.id, m.text, m.date_time, u.id AS sender_id, u.username AS sender_username, 
+                m.chat_id AS chat_id, c.name AS chat_name 
+                FROM messages m JOIN users u ON m.sender_id = u.id 
+                JOIN chats c ON m.chat_id = c.id WHERE m.chat_id = ?
+                """;
 
         return queryExecutor.executeQuery(
                 sql,

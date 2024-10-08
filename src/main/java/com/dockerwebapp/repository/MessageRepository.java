@@ -17,7 +17,6 @@ public interface MessageRepository {
 
     void delete(Long id) throws SQLException;
 
-    // Поиск всех сообщений по чату
     List<Message> findByChatId(Long chatId) throws SQLException;
 
 }

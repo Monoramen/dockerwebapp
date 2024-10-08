@@ -4,19 +4,18 @@ import com.dockerwebapp.model.Chat;
 import com.dockerwebapp.model.User;
 import com.dockerwebapp.repository.ChatRepository;
 import com.dockerwebapp.repository.UserManagementRepository;
-import com.dockerwebapp.repository.impl.UserManagementRepositoryImpl;
 import com.dockerwebapp.service.impl.ChatServiceImpl;
 import com.dockerwebapp.servlet.dto.ChatDto;
 
 import com.dockerwebapp.servlet.dto.ChatDtoParticipant;
 import com.dockerwebapp.servlet.dto.UserDto;
 import com.dockerwebapp.servlet.dto.UserInfoDto;
-import org.junit.Ignore;
+import com.dockerwebapp.servlet.mapper.ChatsMapper;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import javax.swing.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,12 +29,16 @@ class ChatServiceTest {
     private ChatServiceImpl chatService;
     private ChatRepository chatRepository;
     private UserManagementRepository userRepository;
+    private ChatsMapper chatsMapper;
+
     private List<Long> participants = new ArrayList<>();
     @BeforeEach
     void setUp() throws SQLException {
         chatRepository = Mockito.mock(ChatRepository.class);
         userRepository = Mockito.mock(UserManagementRepository.class);
-        chatService = new ChatServiceImpl(chatRepository,userRepository); // Внедряем
+        chatsMapper = Mockito.mock(ChatsMapper.class);
+
+        chatService = new ChatServiceImpl(chatRepository,userRepository);
 
         UserDto userDto1 = new UserDto();
         userDto1.setId(1L);
@@ -93,7 +96,6 @@ class ChatServiceTest {
 
     @Test
     void testGetChatById() throws SQLException {
-        // Arrange
         Long chatId = 1L;
         Chat expectedChat = new Chat();
         expectedChat.setId(chatId);

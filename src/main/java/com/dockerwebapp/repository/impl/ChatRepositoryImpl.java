@@ -32,7 +32,6 @@ public class ChatRepositoryImpl implements ChatRepository {
             throw new SQLException("Error adding chat", e);
         }
 
-        // Затем добавляем участников
         if (chat.getParticipantIds() != null && chat.getParticipantIds().size() >= 2) {
             String participantSql = "INSERT INTO chat_participants (chat_id, user_id) VALUES (?, ?)";
 
@@ -58,7 +57,6 @@ public class ChatRepositoryImpl implements ChatRepository {
     private boolean isUserExists(Long userId) throws SQLException {
         String sql = "SELECT COUNT(*) FROM users WHERE id = ?";
 
-        // Используем executeQuery для получения результата
         return queryExecutor.executeQuery(sql, new Object[]{userId}, resultSet -> {
             try {
                 if (resultSet.next()) {
@@ -73,7 +71,6 @@ public class ChatRepositoryImpl implements ChatRepository {
 
     @Override
     public void deleteChat(Long chatId) throws SQLException {
-        // Проверяем, существует ли чат
         String checkChatSql = "SELECT COUNT(*) FROM chats WHERE id = ?";
         int count = queryExecutor.executeQuery(checkChatSql, new Object[]{chatId}, resultSet -> {
             try {
@@ -89,24 +86,24 @@ public class ChatRepositoryImpl implements ChatRepository {
         });
 
         if (count == 0) {
-            throw new SQLException("Chat with ID " + chatId + " does not exist."); // Выбрасываем исключение, если чат не найден
+            throw new SQLException("Chat with ID " + chatId + " does not exist.");
         }
 
-        // Удаляем участников
         String deleteParticipantsSql = "DELETE FROM chat_participants WHERE chat_id = ?";
         queryExecutor.executeUpdate(deleteParticipantsSql, new Object[]{chatId});
 
-        // Удаляем чат
         String deleteChatSql = "DELETE FROM chats WHERE id = ?";
         queryExecutor.executeUpdate(deleteChatSql, new Object[]{chatId});
     }
 
     @Override
     public List<Chat> getUserChats(Long userId) throws SQLException {
-        String sql = "SELECT c.id AS id, c.name AS name, cp.user_id AS participantId \n" +
-                "FROM chats c \n" +
-                "JOIN chat_participants cp ON c.id = cp.chat_id \n" +
-                "WHERE cp.user_id = ?";
+        String sql = """
+                SELECT c.id AS id, c.name AS name, cp.user_id AS participantId 
+                FROM chats c 
+                JOIN chat_participants cp ON c.id = cp.chat_id 
+                WHERE cp.user_id = ?
+                """;
 
         return queryExecutor.executeQuery(sql,
                 new Object[]{userId},
@@ -133,14 +130,13 @@ public class ChatRepositoryImpl implements ChatRepository {
         queryExecutor.executeUpdate(sql, new Object[]{chat.getName(), chat.getId()});
     }
 
-
     @Override
     public Chat getChatById(Long chatId) throws SQLException {
-        String sql = "SELECT c.id AS chat_id, c.name AS chat_name, " +
-                "m.id AS message_id, m.text AS message_text, m.sender_id AS sender_id " +
-                "FROM chats c " +
-                "LEFT JOIN messages m ON c.id = m.chat_id " +
-                "WHERE c.id = ?";
+        String sql = """
+                SELECT c.id AS chat_id, c.name AS chat_name, m.id AS message_id, m.text AS message_text, 
+                m.sender_id AS sender_id, m.date_time AS date_time
+                FROM chats c LEFT JOIN messages m ON c.id = m.chat_id WHERE c.id = ?
+               """;
 
         return queryExecutor.executeQuery(sql, new Object[]{chatId}, resultSet -> {
             try {
@@ -155,10 +151,12 @@ public class ChatRepositoryImpl implements ChatRepository {
                         Long messageId = resultSet.getLong("message_id");
                         String messageText = resultSet.getString("message_text");
                         Long senderId = resultSet.getLong("sender_id");
-                        LocalDateTime dateTime = resultSet.getTimestamp("dateTime").toLocalDateTime();
+                        LocalDateTime dateTime = resultSet.getTimestamp("date_time").toLocalDateTime();
 
                         if (messageId != null) {
-                            Message message = new Message(messageId, messageText, dateTime , senderId, id);
+                            User sender = new User();
+                            sender.setId(senderId);
+                            Message message = new Message(messageId, messageText, dateTime, sender, chat);
                             messages.add(message);
                         }
                     } while (resultSet.next());
@@ -172,7 +170,6 @@ public class ChatRepositoryImpl implements ChatRepository {
             return null;
         });
     }
-
 
 
 }

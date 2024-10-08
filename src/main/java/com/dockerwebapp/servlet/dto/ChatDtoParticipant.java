@@ -8,7 +8,7 @@ import java.util.Objects;
 public class ChatDtoParticipant {
     private Long id;
     private String name;
-    private List<Long> participantIds; // Список идентификаторов участников
+    private List<Long> participantIds;
 
 
 

@@ -74,7 +74,7 @@ public class MessageServlet extends HttpServlet {
                     Long chatId = Long.valueOf(pathParts[2]);
                     MessageDto messageDto = objectMapper.readValue(request.getInputStream(), MessageDto.class);
                     messageDto.setChatId(chatId);
-                    messageService.save(messageDto); // Сохраняем сообщение
+                    messageService.save(messageDto);
 
                     response.setStatus(HttpServletResponse.SC_CREATED);
                 } catch (Exception e) {

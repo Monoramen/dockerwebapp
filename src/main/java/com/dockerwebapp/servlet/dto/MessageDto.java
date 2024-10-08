@@ -6,7 +6,7 @@ import java.util.Objects;
 public class MessageDto {
     private Long id;
     private String text;
-    private String dateTime;  // В виде строки для удобства
+    private String dateTime;
     private Long senderId;
     private Long chatId;
 
@@ -26,10 +26,7 @@ public class MessageDto {
         this.chatId = chatId;
     }
 
-    // Конструктор без параметров (если нужен)
     public MessageDto() {}
-
-    // Геттеры и сеттеры
 
     public Long getId() {
         return id;
